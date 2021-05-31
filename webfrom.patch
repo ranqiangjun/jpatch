@@ -1,0 +1,9 @@
+diff --git a/webform.info.yml b/webform.info.yml
+index 25b91ee3a..68df99b72 100644
+--- a/webform.info.yml
++++ b/webform.info.yml
+@@ -7,3 +7,4 @@ configure: entity.webform.collection
+ dependencies:
+   - 'drupal:field'
+   - 'drupal:user'
++version: 6.0.3
