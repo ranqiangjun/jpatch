@@ -1,0 +1,15 @@
+diff --git a/js/webform.element.signature.js b/js/webform.element.signature.js
+index d8b77cce2..bd1eea644 100644
+--- a/js/webform.element.signature.js
++++ b/js/webform.element.signature.js
+@@ -47,7 +47,9 @@
+         var options = $.extend({
+           onEnd: function () {
+             $input.val(signaturePad.toDataURL());
+-          }
++          },
++          minWidth: 5,
++          maxWidth: 10,
+         }, Drupal.webform.signaturePad.options);
+         var signaturePad = new SignaturePad(canvas, options);
+ 
