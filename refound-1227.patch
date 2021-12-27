@@ -1,0 +1,105 @@
+diff --git a/modules/order/commerce_order.workflows.yml b/modules/order/commerce_order.workflows.yml
+index 670836ab..fb30bdea 100644
+--- a/modules/order/commerce_order.workflows.yml
++++ b/modules/order/commerce_order.workflows.yml
+@@ -9,6 +9,10 @@ order_default:
+       label: Completed
+     canceled:
+       label: Canceled
++    refunded:
++      label: Refunded
++    partially_refunded:
++      label: Partially refunded
+   transitions:
+     place:
+       label: 'Place order'
+@@ -18,6 +22,14 @@ order_default:
+       label: 'Cancel order'
+       from: [draft]
+       to: canceled
++    partial_refund:
++      label: 'Partially refund order'
++      from: [completed]
++      to: partially_refunded
++    refund:
++      label: 'Refund order'
++      from: [completed, partially_refunded]
++      to: refunded
+ 
+ order_default_validation:
+   id: order_default_validation
+@@ -32,6 +44,10 @@ order_default_validation:
+       label: Completed
+     canceled:
+       label: Canceled
++    refunded:
++      label: Refunded
++    partially_refunded:
++      label: Partially refunded
+   transitions:
+     place:
+       label: 'Place order'
+@@ -45,6 +61,14 @@ order_default_validation:
+       label: 'Cancel order'
+       from: [draft, validation]
+       to: canceled
++    partial_refund:
++      label: 'Partially refund order'
++      from: [completed]
++      to: partially_refunded
++    refund:
++      label: 'Refund order'
++      from: [completed, partially_refunded]
++      to: refunded
+ 
+ order_fulfillment:
+   id: order_fulfillment
+@@ -59,6 +83,10 @@ order_fulfillment:
+       label: Completed
+     canceled:
+       label: Canceled
++    refunded:
++      label: Refunded
++    partially_refunded:
++      label: Partially refunded
+   transitions:
+     place:
+       label: 'Place order'
+@@ -72,6 +100,14 @@ order_fulfillment:
+       label: 'Cancel order'
+       from: [draft, fulfillment]
+       to: canceled
++    partial_refund:
++      label: 'Partially refund order'
++      from: [fulfillment, completed]
++      to: partially_refunded
++    refund:
++      label: 'Refund order'
++      from: [fulfillment, completed, partially_refunded]
++      to: refunded
+ 
+ order_fulfillment_validation:
+   id: order_fulfillment_validation
+@@ -88,6 +124,10 @@ order_fulfillment_validation:
+       label: Completed
+     canceled:
+       label: Canceled
++    refunded:
++      label: Refunded
++    partially_refunded:
++      label: Partially refunded
+   transitions:
+     place:
+       label: 'Place order'
+@@ -105,3 +145,11 @@ order_fulfillment_validation:
+       label: 'Cancel order'
+       from: [draft, validation, fulfillment]
+       to: canceled
++    partial_refund:
++      label: 'Partially refund order'
++      from: [fulfillment, completed]
++      to: partially_refunded
++    refund:
++      label: 'Refund order'
++      from: [fulfillment, completed, partially_refunded]
++      to: refunded
