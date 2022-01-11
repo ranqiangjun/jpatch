@@ -1,0 +1,13 @@
+diff --git a/core/modules/jsonapi/src/JsonApiSpec.php b/core/modules/jsonapi/src/JsonApiSpec.php
+index 274b3f4deb..af38194114 100644
+--- a/core/modules/jsonapi/src/JsonApiSpec.php
++++ b/core/modules/jsonapi/src/JsonApiSpec.php
+@@ -96,6 +96,8 @@ public static function isValidMemberName($member_name) {
+     'page',
+     'fields',
+     'include',
++    '_exception_statuscode',
++    'destination',
+   ];
+ 
+   /**
