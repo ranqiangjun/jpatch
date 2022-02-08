@@ -1,0 +1,394 @@
+diff --git a/phpunit.xml.dist b/phpunit.xml.dist
+index 1427f91..4a0d46e 100644
+--- a/phpunit.xml.dist
++++ b/phpunit.xml.dist
+@@ -9,6 +9,9 @@
+   beStrictAboutCoversAnnotation="false"
+   colors="true"
+ >
++  <php>
++    <ini name="display_errors" value="true"/>
++  </php>
+   <coverage includeUncoveredFiles="true">
+     <include>
+       <directory suffix=".php">src/</directory>
+diff --git a/src/Attachment.php b/src/Attachment.php
+index 2b2f404..f1028de 100644
+--- a/src/Attachment.php
++++ b/src/Attachment.php
+@@ -51,6 +51,11 @@ final class Attachment implements AttachmentInterface
+      */
+     protected $mimePartStr;
+ 
++    /**
++     * @var Entity $part
++     */
++    protected $part;
++
+     /**
+      * @var integer $maxDuplicateNumber
+      */
+@@ -63,6 +68,7 @@ final class Attachment implements AttachmentInterface
+         $attachment->stream = $attachment->createStream($part);
+         $attachment->content = null;
+         $attachment->mimePartStr = $part->getCompleteBody();
++        $attachment->part = $part;
+ 
+         $mimeHeaderDecoder  = new MimeHeaderDecoder(new Charset(), new ContentTransferDecoder());
+ 
+@@ -206,6 +212,9 @@ final class Attachment implements AttachmentInterface
+     public function getContent(): string
+     {
+         if ($this->content === null) {
++            if (!is_resource($this->stream)) {
++                $this->stream = $this->createStream($this->part);
++            }
+             fseek($this->stream, 0);
+             $this->content = stream_get_contents($this->stream);
+         }
+diff --git a/src/Charset.php b/src/Charset.php
+index 4638257..60664d8 100644
+--- a/src/Charset.php
++++ b/src/Charset.php
+@@ -66,6 +66,7 @@ final class Charset implements CharsetManager
+         'big5'                     => 'big5',
+         'euc-jp'                   => 'euc-jp',
+         'euc-kr'                   => 'euc-kr',
++        'euc-cn'                   => 'gb2312',
+         'gb2312'                   => 'gb2312',
+         'gb18030'                  => 'gb18030',
+         'viscii'                   => 'viscii',
+diff --git a/src/Entity.php b/src/Entity.php
+index 9ca8bf2..a2780f8 100644
+--- a/src/Entity.php
++++ b/src/Entity.php
+@@ -306,11 +306,70 @@ final class Entity implements \ArrayAccess
+             $this->getBody(),
+             $this->getContentTransferEncoding()
+         );
+-        return $this->parserConfig->getCharsetManager()->decodeCharset($undecodedBody, $this->getCharset());
++
++        $charset = $this->getCharset();
++        if (empty($charset) || strtolower($charset) === 'utf-8') {
++            if (!$this->validateUtf8($undecodedBody)) {
++                $encoding = mb_detect_encoding($undecodedBody, ['windows-1252', 'iso-8859-1', 'gb2312', 'gb18030'], true);
++                // See https://www.i18nqa.com/debug/table-iso8859-1-vs-windows-1252.html.
++                if ($encoding === 'ISO-8859-1') {
++                    $encoding = 'windows-1252';
++                }
++                if ($encoding !== false) {
++                    return mb_convert_encoding($undecodedBody, 'utf-8', $encoding);
++                }
++            }
++        }
++        return $this->parserConfig->getCharsetManager()->decodeCharset($undecodedBody, $charset);
+     }
+ 
+     public function parse()
+     {
+         return $this->parserConfig->middlewareStack->parse($this);
+     }
++
++    /**
++     * Checks whether a string is valid UTF-8.
++     *
++     * All functions designed to filter input should use drupal_validate_utf8
++     * to ensure they operate on valid UTF-8 strings to prevent bypass of the
++     * filter.
++     *
++     * When text containing an invalid UTF-8 lead byte (0xC0 - 0xFF) is presented
++     * as UTF-8 to Internet Explorer 6, the program may misinterpret subsequent
++     * bytes. When these subsequent bytes are HTML control characters such as
++     * quotes or angle brackets, parts of the text that were deemed safe by filters
++     * end up in locations that are potentially unsafe; An onerror attribute that
++     * is outside of a tag, and thus deemed safe by a filter, can be interpreted
++     * by the browser as if it were inside the tag.
++     *
++     * The function does not return FALSE for strings containing character codes
++     * above U+10FFFF, even though these are prohibited by RFC 3629.
++     *
++     * @param string $text
++     *   The text to check.
++     *
++     * @return bool
++     *   TRUE if the text is valid UTF-8, FALSE if not.
++     */
++    public function validateUtf8($text)
++    {
++        return !(mb_detect_encoding($text, 'UTF-8', true) === false);
++    }
++
++    /**
++     * TODO: to remove
++     *
++     * @return string|null
++     */
++    public function getCharsetFormOtherFields()
++    {
++        if (strtolower($this->getContentTransferEncoding()) === '8bit') {
++            return 'windows-1252';
++        }
++        if (strtolower($this->getContentTransferEncoding()) === '7bit') {
++            return 'iso-8859-1';
++        }
++        return null;
++    }
+ }
+diff --git a/src/Parser.php b/src/Parser.php
+index 402c87e..659420c 100644
+--- a/src/Parser.php
++++ b/src/Parser.php
+@@ -261,7 +261,38 @@ final class Parser implements ParserInterface
+      */
+     public function getSubject()
+     {
+-        return $this->getHeader('subject');
++        $subject = $this->getHeader('subject');
++        if (!$this->validateUtf8($subject)) {
++            $encoding = mb_detect_encoding($subject, ['gb2312', 'gb18030']);
++            if ($encoding !== false) {
++                return mb_convert_encoding($subject, 'utf-8', $encoding);
++            }
++        }
++        return $subject;
++    }
++
++    /**
++     * @return mixed[]|bool|string
++     */
++    public function getSender()
++    {
++        $sender = $this->getHeader('Sender');
++        if (!$this->validateUtf8($sender)) {
++            return mb_decode_mimeheader($this->getHeaderRaw('Sender'));
++        }
++        return $sender;
++    }
++
++    /**
++     * @return mixed[]|bool|string
++     */
++    public function getReplyTo()
++    {
++        $reply_to = $this->getHeader('Reply-To');
++        if (!$this->validateUtf8($reply_to)) {
++            return mb_decode_mimeheader($this->getHeaderRaw('Reply-To'));
++        }
++        return $reply_to;
+     }
+ 
+     public function getSubjectRaw()
+@@ -274,7 +305,14 @@ final class Parser implements ParserInterface
+      */
+     public function getFrom()
+     {
+-        return $this->getHeader('from');
++        $form = $this->getHeader('from');
++        if (!$this->validateUtf8($form)) {
++            $encoding = mb_detect_encoding($form, ['gb2312']);
++            if ($encoding !== false) {
++                return mb_convert_encoding($form, 'utf-8', $encoding);
++            }
++        }
++        return $form;
+     }
+ 
+     public function getFromRaw()
+@@ -531,4 +569,34 @@ final class Parser implements ParserInterface
+     {
+         return $this->data;
+     }
++
++
++    /**
++     * Checks whether a string is valid UTF-8.
++     *
++     * All functions designed to filter input should use drupal_validate_utf8
++     * to ensure they operate on valid UTF-8 strings to prevent bypass of the
++     * filter.
++     *
++     * When text containing an invalid UTF-8 lead byte (0xC0 - 0xFF) is presented
++     * as UTF-8 to Internet Explorer 6, the program may misinterpret subsequent
++     * bytes. When these subsequent bytes are HTML control characters such as
++     * quotes or angle brackets, parts of the text that were deemed safe by filters
++     * end up in locations that are potentially unsafe; An onerror attribute that
++     * is outside of a tag, and thus deemed safe by a filter, can be interpreted
++     * by the browser as if it were inside the tag.
++     *
++     * The function does not return FALSE for strings containing character codes
++     * above U+10FFFF, even though these are prohibited by RFC 3629.
++     *
++     * @param string $text
++     *   The text to check.
++     *
++     * @return bool
++     *   TRUE if the text is valid UTF-8, FALSE if not.
++     */
++    public function validateUtf8($text)
++    {
++        return !(mb_detect_encoding($text, 'UTF-8', true) === false);
++    }
+ }
+diff --git a/tests/AttachmentTest.php b/tests/AttachmentTest.php
+index e30de37..57b5f3f 100644
+--- a/tests/AttachmentTest.php
++++ b/tests/AttachmentTest.php
+@@ -1,6 +1,7 @@
+ <?php
+ namespace Tests\PhpMimeMailParser;
+ 
++use PhpMimeMailParser\Attachment;
+ use PhpMimeMailParser\Parser;
+ use PhpMimeMailParser\ParserConfig;
+ use Tests\PhpMimeMailParser\Stubs\AnotherAttachment;
+@@ -297,4 +298,24 @@ final class AttachmentTest extends TestCase
+         $this->assertStringContainsString('foobar', $parser->getText());
+         $this->assertCount(2, $parser->getNestedAttachments(['attachment', 'inline']));
+     }
++
++    public function test0Byte(): void
++    {
++        $parser = Parser::fromPath(__DIR__.'/mails/17772ecc3790c64d-RE_Di_XIN_-_2614381_Offer__IELTS_exemption_query.eml');
++
++        $items = [];
++        foreach ($parser->getAttachments() as $attachment) {
++            /** @var Attachment $attachment */
++            $filename = $attachment->getFilename();
++            $items[$filename] = $attachment->getContentID();
++            $this->assertNotEmpty($attachment->getContent());
++        }
++        foreach ($parser->getInlineAttachments() as $attachment) {
++            /** @var Attachment $attachment */
++            $filename = $attachment->getFilename();
++            $items[$filename] = $attachment->getContent();
++        }
++
++        $this->assertCount(6, $items);
++    }
+ }
+diff --git a/tests/ParserTest.php b/tests/ParserTest.php
+index edc087a..fc042ed 100644
+--- a/tests/ParserTest.php
++++ b/tests/ParserTest.php
+@@ -1971,4 +1971,121 @@ mini plain body';
+         $parser = Parser::fromPath(__DIR__.'/mails/issue329');
+         $this->assertStringContainsString("für möglich häufig", $parser->getText());
+     }
++
++    /**
++     * Tests ’ in body.
++     */
++    public function test17652ccd5789ac83():void
++    {
++        $parser = Parser::fromPath(__DIR__.'/mails/17652ccd5789ac83-What is B2B marketing_.eml');
++        $this->assertStringContainsString("It’s the discipline", $parser->getText());
++    }
++
++    /**
++     * Tests pound sign in body.
++     */
++    public function test15405a68d2e90946test154624dd1a20337a():void
++    {
++        $parser = Parser::fromPath(__DIR__.'/mails/15405a68d2e90946-Sussex Univesity Housing.eml');
++        $this->assertStringContainsString("£250.00", $parser->getHtml());
++        $parser = Parser::fromPath(__DIR__.'/mails/154624dd1a20337a-Sussex Universtiy Housing application.eml');
++        $this->assertStringContainsString("£250.00", $parser->getHtml());
++        $parser = Parser::fromPath(__DIR__ . '/mails/17509c024befe8ef.eml');
++        $this->assertStringContainsString("300", $parser->getHtml());
++        $this->assertStringContainsString("470", $parser->getHtml());
++        $this->assertStringContainsString("£470", $parser->getHtml());
++        $parser = Parser::fromPath(__DIR__ . '/mails/163646d51315196e.eml');
++        $this->assertStringContainsString("£", $parser->getHtml());
++    }
++
++    /**
++     * Tests ’ in body.
++     */
++    public function test1505c7e52d63f3a26():void
++    {
++        $parser = Parser::fromPath(__DIR__.'/mails/1505c7e52d63f3a2-RE_ Re application of Xia ZHOU.eml');
++        $this->assertStringContainsString("Northampton’s world-leading", $parser->getHtml());
++    }
++
++    /**
++     * Tests chinese in body.
++     */
++    public function test151aa5ecbb900e7e():void
++    {
++        $parser = Parser::fromPath(__DIR__.'/mails/151aa5ecbb900e7e-Re_ Your Withdrawal from OnCampus Coventry.eml');
++        // TODO: to fix.
++        $this->assertStringNotContainsString("在 2015年11月10日", $parser->getHtml());
++    }
++
++    /**
++     * Tests parsing subject in chinese with mail messages from QQ.
++     */
++    public function test15333075dae1b8b9test157a36b676cd947a():void
++    {
++        $parser = Parser::fromPath(__DIR__.'/mails/15333075dae1b8b9-来自qq.com的退信.eml');
++        $this->assertEquals("来自qq.com的退信", $parser->getSubject());
++        $this->assertStringContainsString("主题: Fwd: Loughborough University Application - Application Number - 000157712", $parser->getHtmlNotEmbedded());
++        $this->assertStringContainsString("主题: Fwd: Loughborough University Application - Application Number - 000157712", $parser->getHtml());
++        $parser = Parser::fromPath(__DIR__.'/mails/157a36b676cd947a-公众账号注册主体身份验证通知.eml');
++        $this->assertEquals("公众账号注册主体身份验证通知", $parser->getSubject());
++        $this->assertStringContainsString('Hi,公众号腐国奇葩管理员：', $parser->getHtml());
++        $this->assertEquals('"微信团队" <weixinteam@qq.com>', $parser->getFrom());
++        $this->assertStringContainsString('Hi,公众号腐国奇葩管理员：', $parser->getHtml());
++        $this->assertEmpty($parser->getText());
++    }
++
++    /**
++     * Tests "’" in subject and body.
++     */
++    public function test150a44fcafbd1581():void
++    {
++        $parser = Parser::fromPath(__DIR__.'/mails/150a44fcafbd1581-RE_ Rubaba Tahsin’s Application Documents for January 2016 from OSSC.eml');
++        $this->assertEquals("RE: Rubaba Tahsin’s Application Documents for January 2016 from OSSC", $parser->getSubject());
++        // TODO: to fix.
++        $this->assertStringNotContainsString("Rubaba Tahsin’s application", $parser->getText());
++    }
++
++    /**
++     * Tests malformatted email message.
++     */
++    public function test1554aa6f5ceb79b9()
++    {
++        $parser = Parser::fromPath(__DIR__.'/mails/1554aa6f5ceb79b9-Thank you for your application to the University of Winchester.eml');
++        $this->assertStringStartsWith("3c68746d6c3e0d0a3c686561643e", bin2hex($parser->getHtml()));
++    }
++
++
++    /**
++     * Tests irish email message.  windows-1252.
++     */
++    public function test15af9ec2d2058554()
++    {
++        $parser = Parser::fromPath(__DIR__.'/mails/15af9ec2d2058554-Application for admission to Bangor University UK.eml');
++        $this->assertStringContainsString("dilëwch y neges", $parser->getText());
++    }
++
++
++    /**
++     * Tests spam.
++     */
++    public function test1611f540f85d7c80()
++    {
++        $parser = Parser::fromPath(__DIR__.'/mails/1611f540f85d7c80-ol普增(禾兑)电13764473254张做账报消.eml');
++        $this->assertEquals("ol普增(禾兑)电13764473254张，做账报消&{?=%", $parser->getSubject());
++        // TODO: to fix.
++        $this->assertEquals("dR普增(禾兑)电13764473254张，做账???消'[?:\ <13764473254@163.con>", $parser->getReplyTo());
++        $this->assertEquals("dR普增(禾兑)???13764473254张，做账??消'[?:\ <xwumnjqm@clcs.com>", $parser->getSender());
++
++    }
++
++    /**
++     * Tests attachment.
++     */
++    public function test176ea35310c48b02()
++    {
++        $parser = Parser::fromPath(__DIR__. "/mails/176ea35310c48b02-Twilight saga Breaking dawn and more ideas youve been looking for.eml");
++        // To fix.
++        $this->assertCount(1, $parser->getAttachments());
++    }
++
+ }
