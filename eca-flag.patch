@@ -1,0 +1,14 @@
+diff --git a/src/Service/Actions.php b/src/Service/Actions.php
+index 4b801a2..30e6909 100644
+--- a/src/Service/Actions.php
++++ b/src/Service/Actions.php
+@@ -58,6 +58,9 @@ class Actions {
+       $actions = [];
+       foreach ($this->actionManager->getDefinitions() as $plugin_id => $definition) {
+         try {
++          if ($definition['provider'] === 'flag') {
++            continue;
++          }
+           $actions[] = $this->actionManager->createInstance($plugin_id);
+         } catch (PluginException $e) {
+           // Can be ignored.
