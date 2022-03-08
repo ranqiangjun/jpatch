@@ -1,0 +1,23 @@
+diff --git a/modules/webform_share/src/Element/WebformShareIframe.php b/modules/webform_share/src/Element/WebformShareIframe.php
+index a2ba6c7e0..74c46ae04 100644
+--- a/modules/webform_share/src/Element/WebformShareIframe.php
++++ b/modules/webform_share/src/Element/WebformShareIframe.php
+@@ -33,7 +33,7 @@ class WebformShareIframe extends RenderElement implements TrustedCallbackInterfa
+       '#webform' => NULL,
+       '#source_entity' => NULL,
+       '#javascript' => FALSE,
+-      '#script' => '//cdn.jsdelivr.net/gh/davidjbradshaw/iframe-resizer@' . static::VERSION . '/js/iframeResizer.min.js',
++      '#script' => 'https://intergreat-front-end-libraries.intergreat.com/4.2.10.iframeResizer.min.js',
+       '#query' => [],
+       '#options' => [],
+       '#test' => [],
+diff --git a/modules/webform_share/webform_share.libraries.yml b/modules/webform_share/webform_share.libraries.yml
+index 1cf7eb1e5..5e4d0aa2b 100644
+--- a/modules/webform_share/webform_share.libraries.yml
++++ b/modules/webform_share/webform_share.libraries.yml
+@@ -39,4 +39,4 @@ libraries.iframe-resizer.4.2.10:
+     url: http://opensource.org/licenses/mit-license.php
+     gpl-compatible: true
+   js:
+-    '//cdn.jsdelivr.net/gh/davidjbradshaw/iframe-resizer@v4.2.10/js/iframeResizer.contentWindow.min.js': { type: external, minified: true }
++    '//intergreat-front-end-libraries.intergreat.com/4.2.10.iframeResizer.contentWindow.min.js': { type: external, minified: true }
