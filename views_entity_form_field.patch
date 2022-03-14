@@ -1,0 +1,13 @@
+diff --git a/src/Plugin/views/field/EntityFormField.php b/src/Plugin/views/field/EntityFormField.php
+index 1c90fcc..69866db 100644
+--- a/src/Plugin/views/field/EntityFormField.php
++++ b/src/Plugin/views/field/EntityFormField.php
+@@ -489,6 +489,8 @@ class EntityFormField extends FieldPluginBase implements CacheableDependencyInte
+         if ($this->getEntity($row)) {
+           // Load field definition based on current entity bundle.
+           $entity = $this->getEntityTranslation($this->getEntity($row), $row);
++          $entity_id= $entity->id();
++          $form[$this->options['id']][$row_index]['#parents'] = [$this->options['id'], $entity_id];
+           if ($entity->hasField($field_name) && $this->getBundleFieldDefinition($entity->bundle())->isDisplayConfigurable('form')) {
+             $items = $entity->get($field_name)->filterEmptyItems();
+ 
