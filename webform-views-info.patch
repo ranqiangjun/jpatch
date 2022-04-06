@@ -1,0 +1,13 @@
+diff --git a/webform_views.info.yml b/webform_views.info.yml
+index 8b2b4b6..c160bab 100644
+--- a/webform_views.info.yml
++++ b/webform_views.info.yml
+@@ -5,7 +5,7 @@ package: 'Webform'
+ type: module
+ dependencies:
+   - drupal:views
+-  - webform:webform (>=6.x)
++  - webform:webform
+ 
+ # Information added by Drupal.org packaging script on 2022-04-04
+ version: '8.x-5.0-beta1'
