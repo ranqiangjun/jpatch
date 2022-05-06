@@ -1,0 +1,25 @@
+diff --git a/js/webform.element.signature.js b/js/webform.element.signature.js
+index d8b77cce2..c98774405 100644
+--- a/js/webform.element.signature.js
++++ b/js/webform.element.signature.js
+@@ -43,11 +43,19 @@
+           }
+         };
+ 
++        var minWidth = 0.5;
++        var maxWidth = 2.5;
++        if (window.screen.width >= 768) {
++          minWidth = 5;
++          maxWidth = 10;
++        }
+         // Initialize signature canvas.
+         var options = $.extend({
+           onEnd: function () {
+             $input.val(signaturePad.toDataURL());
+-          }
++          },
++          minWidth: minWidth,
++          maxWidth: maxWidth,
+         }, Drupal.webform.signaturePad.options);
+         var signaturePad = new SignaturePad(canvas, options);
+ 
