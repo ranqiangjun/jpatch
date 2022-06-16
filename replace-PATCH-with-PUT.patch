@@ -1,0 +1,1985 @@
+diff --git a/core/modules/aggregator/tests/src/Functional/Jsonapi/FeedTest.php b/core/modules/aggregator/tests/src/Functional/Jsonapi/FeedTest.php
+index 69d9264b42..2c0680cf90 100644
+--- a/core/modules/aggregator/tests/src/Functional/Jsonapi/FeedTest.php
++++ b/core/modules/aggregator/tests/src/Functional/Jsonapi/FeedTest.php
+@@ -64,7 +64,7 @@ protected function setUpAuthorization($method) {
+         break;
+ 
+       case 'POST':
+-      case 'PATCH':
++      case 'PUT':
+       case 'DELETE':
+         $this->grantPermissionsToTestedRole(['administer news feeds']);
+         break;
+@@ -173,7 +173,7 @@ protected function getExpectedUnauthorizedAccessMessage($method) {
+         return "The 'access news feeds' permission is required.";
+ 
+       case 'POST':
+-      case 'PATCH':
++      case 'PUT':
+       case 'DELETE':
+         return "The 'administer news feeds' permission is required.";
+     }
+diff --git a/core/modules/aggregator/tests/src/Functional/Jsonapi/ItemTest.php b/core/modules/aggregator/tests/src/Functional/Jsonapi/ItemTest.php
+index 351ef1bb2b..8024fb10e4 100644
+--- a/core/modules/aggregator/tests/src/Functional/Jsonapi/ItemTest.php
++++ b/core/modules/aggregator/tests/src/Functional/Jsonapi/ItemTest.php
+@@ -56,7 +56,7 @@ protected function setUpAuthorization($method) {
+         break;
+ 
+       case 'POST':
+-      case 'PATCH':
++      case 'PUT':
+       case 'DELETE':
+         $this->grantPermissionsToTestedRole(['administer news feeds']);
+         break;
+@@ -121,7 +121,7 @@ protected function getExpectedUnauthorizedAccessMessage($method) {
+         return "The 'access news feeds' permission is required.";
+ 
+       case 'POST':
+-      case 'PATCH':
++      case 'PUT':
+       case 'DELETE':
+         return "The 'administer news feeds' permission is required.";
+     }
+diff --git a/core/modules/aggregator/tests/src/Functional/Rest/FeedResourceTestBase.php b/core/modules/aggregator/tests/src/Functional/Rest/FeedResourceTestBase.php
+index b271fc8319..bcd86f1d6f 100644
+--- a/core/modules/aggregator/tests/src/Functional/Rest/FeedResourceTestBase.php
++++ b/core/modules/aggregator/tests/src/Functional/Rest/FeedResourceTestBase.php
+@@ -37,7 +37,7 @@ protected function setUpAuthorization($method) {
+         break;
+ 
+       case 'POST':
+-      case 'PATCH':
++      case 'PUT':
+       case 'DELETE':
+         $this->grantPermissionsToTestedRole(['administer news feeds']);
+         break;
+@@ -185,7 +185,7 @@ protected function getExpectedUnauthorizedAccessMessage($method) {
+         return "The 'access news feeds' permission is required.";
+ 
+       case 'POST':
+-      case 'PATCH':
++      case 'PUT':
+       case 'DELETE':
+         return "The 'administer news feeds' permission is required.";
+ 
+diff --git a/core/modules/aggregator/tests/src/Functional/Rest/ItemResourceTestBase.php b/core/modules/aggregator/tests/src/Functional/Rest/ItemResourceTestBase.php
+index 89bfeb815c..881a893139 100644
+--- a/core/modules/aggregator/tests/src/Functional/Rest/ItemResourceTestBase.php
++++ b/core/modules/aggregator/tests/src/Functional/Rest/ItemResourceTestBase.php
+@@ -44,7 +44,7 @@ protected function setUpAuthorization($method) {
+         break;
+ 
+       case 'POST':
+-      case 'PATCH':
++      case 'PUT':
+       case 'DELETE':
+         $this->grantPermissionsToTestedRole(['administer news feeds']);
+         break;
+@@ -177,7 +177,7 @@ protected function getExpectedUnauthorizedAccessMessage($method) {
+         return "The 'access news feeds' permission is required.";
+ 
+       case 'POST':
+-      case 'PATCH':
++      case 'PUT':
+       case 'DELETE':
+         return "The 'administer news feeds' permission is required.";
+ 
+diff --git a/core/modules/block/tests/src/Functional/Rest/BlockResourceTestBase.php b/core/modules/block/tests/src/Functional/Rest/BlockResourceTestBase.php
+index dd0e131391..ff3dcee8c8 100644
+--- a/core/modules/block/tests/src/Functional/Rest/BlockResourceTestBase.php
++++ b/core/modules/block/tests/src/Functional/Rest/BlockResourceTestBase.php
+@@ -36,7 +36,7 @@ protected function setUpAuthorization($method) {
+         $this->grantPermissionsToTestedRole(['administer blocks']);
+         break;
+ 
+-      case 'PATCH':
++      case 'PUT':
+         $this->grantPermissionsToTestedRole(['administer blocks']);
+         break;
+     }
+diff --git a/core/modules/comment/tests/src/Functional/Rest/CommentResourceTestBase.php b/core/modules/comment/tests/src/Functional/Rest/CommentResourceTestBase.php
+index aef51880de..0ee0e654e9 100644
+--- a/core/modules/comment/tests/src/Functional/Rest/CommentResourceTestBase.php
++++ b/core/modules/comment/tests/src/Functional/Rest/CommentResourceTestBase.php
+@@ -60,7 +60,7 @@ protected function setUpAuthorization($method) {
+         $this->grantPermissionsToTestedRole(['post comments']);
+         break;
+ 
+-      case 'PATCH':
++      case 'PUT':
+         // Anonymous users are not ever allowed to edit their own comments. To
+         // be able to test PATCHing comments as the anonymous user, the more
+         // permissive 'administer comments' permission must be granted.
+@@ -323,7 +323,7 @@ protected function getExpectedUnauthorizedAccessMessage($method) {
+       case 'POST';
+         return "The 'post comments' permission is required.";
+ 
+-      case 'PATCH';
++      case 'PUT';
+         return "The 'edit own comments' permission is required, the user must be the comment author, and the comment must be published.";
+ 
+       case 'DELETE':
+diff --git a/core/modules/file/tests/src/Functional/Rest/FileResourceTestBase.php b/core/modules/file/tests/src/Functional/Rest/FileResourceTestBase.php
+index 2d87ca796b..4b2c436606 100644
+--- a/core/modules/file/tests/src/Functional/Rest/FileResourceTestBase.php
++++ b/core/modules/file/tests/src/Functional/Rest/FileResourceTestBase.php
+@@ -48,7 +48,7 @@ protected function setUpAuthorization($method) {
+         $this->grantPermissionsToTestedRole(['access content']);
+         break;
+ 
+-      case 'PATCH':
++      case 'PUT':
+       case 'DELETE':
+         // \Drupal\file\FileAccessControlHandler::checkAccess() grants 'update'
+         // and 'delete' access only to the user that owns the file. So there is
+@@ -211,7 +211,7 @@ protected function getExpectedUnauthorizedAccessMessage($method) {
+     if ($method === 'GET') {
+       return "The 'access content' permission is required.";
+     }
+-    if ($method === 'PATCH' || $method === 'DELETE') {
++    if ($method === 'PUT' || $method === 'DELETE') {
+       return 'Only the file owner can update or delete the file entity.';
+     }
+     return parent::getExpectedUnauthorizedAccessMessage($method);
+diff --git a/core/modules/jsonapi/src/Controller/EntityResource.php b/core/modules/jsonapi/src/Controller/EntityResource.php
+index 9ce8a725ce..86fd2590f0 100644
+--- a/core/modules/jsonapi/src/Controller/EntityResource.php
++++ b/core/modules/jsonapi/src/Controller/EntityResource.php
+@@ -831,7 +831,7 @@ protected function deserialize(ResourceType $resource_type, Request $request, $c
+     assert($class === JsonApiDocumentTopLevel::class || $class === ResourceIdentifier::class && !empty($relationship_field_name) && is_string($relationship_field_name));
+     $received = (string) $request->getContent();
+     if (!$received) {
+-      assert($request->isMethod('POST') || $request->isMethod('PATCH') || $request->isMethod('DELETE'));
++      assert($request->isMethod('POST') || $request->isMethod('PUT') || $request->isMethod('DELETE'));
+       if ($request->isMethod('DELETE') && $relationship_field_name) {
+         throw new BadRequestHttpException(sprintf('You need to provide a body for DELETE operations on a relationship (%s).', $relationship_field_name));
+       }
+diff --git a/core/modules/jsonapi/src/ParamConverter/EntityUuidConverter.php b/core/modules/jsonapi/src/ParamConverter/EntityUuidConverter.php
+index 3cae9f8e9d..28662ad340 100644
+--- a/core/modules/jsonapi/src/ParamConverter/EntityUuidConverter.php
++++ b/core/modules/jsonapi/src/ParamConverter/EntityUuidConverter.php
+@@ -62,12 +62,12 @@ public function convert($value, $definition, $name, array $defaults) {
+         $entity = $this->entityRepository->getTranslationFromContext($entity, NULL, ['operation' => 'entity_upcast']);
+         // JSON:API always has only one method per route.
+         $method = $defaults[RouteObjectInterface::ROUTE_OBJECT]->getMethods()[0];
+-        if (in_array($method, ['PATCH', 'DELETE'], TRUE)) {
++        if (in_array($method, ['PUT', 'DELETE'], TRUE)) {
+           $current_content_language = $this->languageManager->getCurrentLanguage(LanguageInterface::TYPE_CONTENT)->getId();
+           if ($method === 'DELETE' && (!$entity->isDefaultTranslation() || $entity->language()->getId() !== $current_content_language)) {
+             throw new MethodNotAllowedHttpException(['GET'], 'Deleting a resource object translation is not yet supported. See https://www.drupal.org/docs/8/modules/jsonapi/translations.');
+           }
+-          if ($method === 'PATCH' && $entity->language()->getId() !== $current_content_language) {
++          if ($method === 'PUT' && $entity->language()->getId() !== $current_content_language) {
+             $available_translations = implode(', ', array_keys($entity->getTranslationLanguages()));
+             throw new MethodNotAllowedHttpException(['GET'], sprintf('The requested translation of the resource object does not exist, instead modify one of the translations that do exist: %s.', $available_translations));
+           }
+diff --git a/core/modules/jsonapi/src/Routing/Routes.php b/core/modules/jsonapi/src/Routing/Routes.php
+index 609ed91312..5b08d8bae5 100644
+--- a/core/modules/jsonapi/src/Routing/Routes.php
++++ b/core/modules/jsonapi/src/Routing/Routes.php
+@@ -298,7 +298,7 @@ protected static function getIndividualRoutesForResourceType(ResourceType $resou
+     if ($resource_type->isMutable()) {
+       $individual_update_route = new Route($individual_route->getPath());
+       $individual_update_route->addDefaults([RouteObjectInterface::CONTROLLER_NAME => static::CONTROLLER_SERVICE_NAME . ':patchIndividual']);
+-      $individual_update_route->setMethods(['PATCH']);
++      $individual_update_route->setMethods(['PUT']);
+       $individual_update_route->setRequirement('_entity_access', "entity.update");
+       $individual_update_route->setRequirement('_csrf_request_header_token', 'TRUE');
+       $routes->add(static::getRouteName($resource_type, 'individual.patch'), $individual_update_route);
+@@ -318,12 +318,12 @@ protected static function getIndividualRoutesForResourceType(ResourceType $resou
+       $relationship_route->addDefaults(['related' => $relationship_field_name]);
+       $relationship_route->setRequirement('_csrf_request_header_token', 'TRUE');
+       $relationship_route_methods = $resource_type->isMutable()
+-        ? ['GET', 'POST', 'PATCH', 'DELETE']
++        ? ['GET', 'POST', 'PUT', 'DELETE']
+         : ['GET'];
+       $relationship_controller_methods = [
+         'GET' => 'getRelationship',
+         'POST' => 'addToRelationshipData',
+-        'PATCH' => 'replaceRelationshipData',
++        'PUT' => 'replaceRelationshipData',
+         'DELETE' => 'removeFromRelationshipData',
+       ];
+       foreach ($relationship_route_methods as $method) {
+diff --git a/core/modules/jsonapi/tests/src/Functional/CommentTest.php b/core/modules/jsonapi/tests/src/Functional/CommentTest.php
+index e01b257d10..0608bf4eb2 100644
+--- a/core/modules/jsonapi/tests/src/Functional/CommentTest.php
++++ b/core/modules/jsonapi/tests/src/Functional/CommentTest.php
+@@ -89,7 +89,7 @@ protected function setUpAuthorization($method) {
+         $this->grantPermissionsToTestedRole(['post comments']);
+         break;
+ 
+-      case 'PATCH':
++      case 'PUT':
+         $this->grantPermissionsToTestedRole(['edit own comments']);
+         break;
+ 
+@@ -296,7 +296,7 @@ protected function getExpectedUnauthorizedAccessMessage($method) {
+       case 'POST';
+         return "The 'post comments' permission is required.";
+ 
+-      case 'PATCH':
++      case 'PUT':
+         return "The 'edit own comments' permission is required, the user must be the comment author, and the comment must be published.";
+ 
+       default:
+diff --git a/core/modules/jsonapi/tests/src/Functional/EntityTestComputedFieldTest.php b/core/modules/jsonapi/tests/src/Functional/EntityTestComputedFieldTest.php
+index 8cc53d049a..62644716c5 100644
+--- a/core/modules/jsonapi/tests/src/Functional/EntityTestComputedFieldTest.php
++++ b/core/modules/jsonapi/tests/src/Functional/EntityTestComputedFieldTest.php
+@@ -61,7 +61,7 @@ protected function setUpAuthorization($method) {
+         $this->grantPermissionsToTestedRole(['create entity_test entity_test_with_bundle entities']);
+         break;
+ 
+-      case 'PATCH':
++      case 'PUT':
+       case 'DELETE':
+         $this->grantPermissionsToTestedRole(['administer entity_test content']);
+         break;
+diff --git a/core/modules/jsonapi/tests/src/Functional/EntityTestTest.php b/core/modules/jsonapi/tests/src/Functional/EntityTestTest.php
+index 09d798f843..d0b2f35ad7 100644
+--- a/core/modules/jsonapi/tests/src/Functional/EntityTestTest.php
++++ b/core/modules/jsonapi/tests/src/Functional/EntityTestTest.php
+@@ -60,7 +60,7 @@ protected function setUpAuthorization($method) {
+         $this->grantPermissionsToTestedRole(['create entity_test entity_test_with_bundle entities']);
+         break;
+ 
+-      case 'PATCH':
++      case 'PUT':
+       case 'DELETE':
+         $this->grantPermissionsToTestedRole(['administer entity_test content']);
+         break;
+diff --git a/core/modules/jsonapi/tests/src/Functional/FileTest.php b/core/modules/jsonapi/tests/src/Functional/FileTest.php
+index 81f6847d4d..4c75b53307 100644
+--- a/core/modules/jsonapi/tests/src/Functional/FileTest.php
++++ b/core/modules/jsonapi/tests/src/Functional/FileTest.php
+@@ -74,7 +74,7 @@ protected function setUpAuthorization($method) {
+         $this->grantPermissionsToTestedRole(['access content']);
+         break;
+ 
+-      case 'PATCH':
++      case 'PUT':
+       case 'DELETE':
+         // \Drupal\file\FileAccessControlHandler::checkAccess() grants 'update'
+         // and 'delete' access only to the user that owns the file. So there is
+@@ -210,7 +210,7 @@ protected function getExpectedUnauthorizedAccessMessage($method) {
+     if ($method === 'GET') {
+       return "The 'access content' permission is required.";
+     }
+-    if ($method === 'PATCH' || $method === 'DELETE') {
++    if ($method === 'PUT' || $method === 'DELETE') {
+       return "Only the file owner can update or delete the file entity.";
+     }
+     return parent::getExpectedUnauthorizedAccessMessage($method);
+diff --git a/core/modules/jsonapi/tests/src/Functional/FileUploadTest.php b/core/modules/jsonapi/tests/src/Functional/FileUploadTest.php
+index 16ed1621a7..2786ddb00c 100644
+--- a/core/modules/jsonapi/tests/src/Functional/FileUploadTest.php
++++ b/core/modules/jsonapi/tests/src/Functional/FileUploadTest.php
+@@ -293,9 +293,9 @@ public function testPostFileUploadAndUseInSingleRequest() {
+ 
+     // DX: 403 when unauthorized.
+     $response = $this->fileRequest($uri, $this->testFileData);
+-    $this->assertResourceErrorResponse(403, $this->getExpectedUnauthorizedAccessMessage('PATCH'), $uri, $response);
++    $this->assertResourceErrorResponse(403, $this->getExpectedUnauthorizedAccessMessage('PUT'), $uri, $response);
+ 
+-    $this->setUpAuthorization('PATCH');
++    $this->setUpAuthorization('PUT');
+ 
+     // 404 when the field name is invalid.
+     $invalid_uri = Url::fromUri($uri->getUri() . '_invalid');
+@@ -772,7 +772,7 @@ protected function getExpectedUnauthorizedAccessMessage($method) {
+       case 'POST':
+         return "The current user is not permitted to upload a file for this field. The following permissions are required: 'administer entity_test content' OR 'administer entity_test_with_bundle content' OR 'create entity_test entity_test_with_bundle entities'.";
+ 
+-      case 'PATCH':
++      case 'PUT':
+         return "The current user is not permitted to upload a file for this field. The 'administer entity_test content' permission is required.";
+     }
+   }
+@@ -897,7 +897,7 @@ protected function setUpAuthorization($method) {
+         $this->grantPermissionsToTestedRole(['create entity_test entity_test_with_bundle entities', 'access content']);
+         break;
+ 
+-      case 'PATCH':
++      case 'PUT':
+         $this->grantPermissionsToTestedRole(['administer entity_test content', 'access content']);
+         break;
+     }
+diff --git a/core/modules/jsonapi/tests/src/Functional/JsonApiFunctionalMultilingualTest.php b/core/modules/jsonapi/tests/src/Functional/JsonApiFunctionalMultilingualTest.php
+index abe0a73d69..98c28feefe 100644
+--- a/core/modules/jsonapi/tests/src/Functional/JsonApiFunctionalMultilingualTest.php
++++ b/core/modules/jsonapi/tests/src/Functional/JsonApiFunctionalMultilingualTest.php
+@@ -125,7 +125,7 @@ public function testPatchTranslation() {
+         ],
+       ],
+     ]);
+-    $response = $this->request('PATCH', Url::fromUri('base:/ca/jsonapi/node/article/' . $this->nodes[0]->uuid()), $request_options);
++    $response = $this->request('PUT', Url::fromUri('base:/ca/jsonapi/node/article/' . $this->nodes[0]->uuid()), $request_options);
+     $this->assertSame(200, $response->getStatusCode());
+ 
+     // Assert the postcondition: only the 'ca' translation has an updated title.
+@@ -146,7 +146,7 @@ public function testPatchTranslation() {
+         ],
+       ],
+     ]);
+-    $response = $this->request('PATCH', Url::fromUri('base:/ca/jsonapi/node/article/' . $this->nodes[0]->uuid()), $request_options);
++    $response = $this->request('PUT', Url::fromUri('base:/ca/jsonapi/node/article/' . $this->nodes[0]->uuid()), $request_options);
+     $this->assertSame(403, $response->getStatusCode());
+ 
+     // Specifying a langcode is allowed once configured to be alterable. But
+@@ -154,7 +154,7 @@ public function testPatchTranslation() {
+     ContentLanguageSettings::loadByEntityTypeBundle('node', 'article')
+       ->setLanguageAlterable(TRUE)
+       ->save();
+-    $response = $this->request('PATCH', Url::fromUri('base:/ca/jsonapi/node/article/' . $this->nodes[0]->uuid()), $request_options);
++    $response = $this->request('PUT', Url::fromUri('base:/ca/jsonapi/node/article/' . $this->nodes[0]->uuid()), $request_options);
+     $this->assertSame(500, $response->getStatusCode());
+     $document = Json::decode((string) $response->getBody());
+     $this->assertSame('The translation language cannot be changed (ca).', $document['errors'][0]['detail']);
+@@ -167,7 +167,7 @@ public function testPatchTranslation() {
+     $document = Json::decode((string) $response->getBody());
+     $this->assertSame($node->getTitle(), $document['data']['attributes']['title']);
+     $this->assertSame('en', $document['data']['attributes']['langcode']);
+-    $response = $this->request('PATCH', Url::fromUri('base:/jsonapi/node/article/' . $this->nodes[0]->uuid()), $request_options);
++    $response = $this->request('PUT', Url::fromUri('base:/jsonapi/node/article/' . $this->nodes[0]->uuid()), $request_options);
+     $this->assertSame(200, $response->getStatusCode());
+     $document = Json::decode((string) $response->getBody());
+     $this->assertSame($node->getTitle(), $document['data']['attributes']['title']);
+@@ -228,7 +228,7 @@ public function testPatchTranslationFallback() {
+         ],
+       ],
+     ]);
+-    $response = $this->request('PATCH', Url::fromUri('base:/ca-fr/jsonapi/node/article/' . $this->nodes[0]->uuid()), $request_options);
++    $response = $this->request('PUT', Url::fromUri('base:/ca-fr/jsonapi/node/article/' . $this->nodes[0]->uuid()), $request_options);
+     $this->assertSame(405, $response->getStatusCode());
+     $document = Json::decode((string) $response->getBody());
+     $this->assertSame('The requested translation of the resource object does not exist, instead modify one of the translations that do exist: ca, en.', $document['errors'][0]['detail']);
+diff --git a/core/modules/jsonapi/tests/src/Functional/JsonApiFunctionalTest.php b/core/modules/jsonapi/tests/src/Functional/JsonApiFunctionalTest.php
+index b51ab5a09b..044bf0b957 100644
+--- a/core/modules/jsonapi/tests/src/Functional/JsonApiFunctionalTest.php
++++ b/core/modules/jsonapi/tests/src/Functional/JsonApiFunctionalTest.php
+@@ -736,7 +736,7 @@ public function testWrite() {
+     $individual_url = Url::fromRoute('jsonapi.node--article.individual', [
+       'entity' => $uuid,
+     ]);
+-    $response = $this->request('PATCH', $individual_url, [
++    $response = $this->request('PUT', $individual_url, [
+       'body' => Json::encode($body),
+       'auth' => [$this->user->getAccountName(), $this->user->pass_raw],
+       'headers' => ['Content-Type' => 'application/vnd.api+json'],
+@@ -756,7 +756,7 @@ public function testWrite() {
+     $individual_url = Url::fromRoute('jsonapi.node--article.individual', [
+       'entity' => $uuid,
+     ]);
+-    $response = $this->request('PATCH', $individual_url, [
++    $response = $this->request('PUT', $individual_url, [
+       'body' => Json::encode($body),
+       'auth' => [$this->userCanViewProfiles->getAccountName(), $this->userCanViewProfiles->pass_raw],
+       'headers' => ['Content-Type' => 'application/vnd.api+json'],
+@@ -774,7 +774,7 @@ public function testWrite() {
+         ],
+       ],
+     ];
+-    $response = $this->request('PATCH', $individual_url, [
++    $response = $this->request('PUT', $individual_url, [
+       'body' => Json::encode($body),
+       'auth' => [$this->user->getAccountName(), $this->user->pass_raw],
+       'headers' => ['Content-Type' => 'application/vnd.api+json'],
+@@ -817,7 +817,7 @@ public function testWrite() {
+         ],
+       ],
+     ];
+-    $response = $this->request('PATCH', $relationship_url, [
++    $response = $this->request('PUT', $relationship_url, [
+       'body' => Json::encode($body),
+       'auth' => [$this->user->getAccountName(), $this->user->pass_raw],
+       'headers' => ['Content-Type' => 'application/vnd.api+json'],
+@@ -868,7 +868,7 @@ public function testWrite() {
+         ],
+       ],
+     ];
+-    $response = $this->request('PATCH', $individual_url, [
++    $response = $this->request('PUT', $individual_url, [
+       'body' => Json::encode($body),
+       'auth' => [$this->user->getAccountName(), $this->user->pass_raw],
+       'headers' => [
+@@ -897,7 +897,7 @@ public function testWrite() {
+         ],
+       ],
+     ];
+-    $response = $this->request('PATCH', $individual_url, [
++    $response = $this->request('PUT', $individual_url, [
+       'body' => Json::encode($body),
+       'auth' => [$this->user->getAccountName(), $this->user->pass_raw],
+       'headers' => [
+diff --git a/core/modules/jsonapi/tests/src/Functional/JsonApiRegressionTest.php b/core/modules/jsonapi/tests/src/Functional/JsonApiRegressionTest.php
+index ee50246048..af220434d7 100644
+--- a/core/modules/jsonapi/tests/src/Functional/JsonApiRegressionTest.php
++++ b/core/modules/jsonapi/tests/src/Functional/JsonApiRegressionTest.php
+@@ -304,7 +304,7 @@ public function testDanglingReferencesInAnEntityReferenceFieldFromIssue2968972()
+       ],
+     ];
+     $issue_node->delete();
+-    $response = $this->request('PATCH', $url, $request_options);
++    $response = $this->request('PUT', $url, $request_options);
+     $this->assertSame(200, $response->getStatusCode(), (string) $response->getBody());
+   }
+ 
+@@ -573,7 +573,7 @@ public function testDenormalizeAliasedRelationshipFromIssue2953207() {
+     ];
+ 
+     // Test.
+-    $response = $this->request('PATCH', Url::fromUri(sprintf('internal:/jsonapi/taxonomy_term/tags/%s/relationships/%s', Term::load(1)->uuid(), $public_relationship_field_name)), [
++    $response = $this->request('PUT', Url::fromUri(sprintf('internal:/jsonapi/taxonomy_term/tags/%s/relationships/%s', Term::load(1)->uuid(), $public_relationship_field_name)), [
+       RequestOptions::AUTH => [
+         $user->getAccountName(),
+         $user->pass_raw,
+@@ -786,7 +786,7 @@ public function testPatchingDateTimeFieldsFromIssue3021194() {
+     $doc['data']['attributes']['when'] = '2018-12-20';
+     $doc['data']['attributes']['when_exactly'] = '2018-12-19T19:00:00+01:00';
+     $request_options = $request_options + [RequestOptions::JSON => $doc];
+-    $response = $this->request('PATCH', $node_url, $request_options);
++    $response = $this->request('PUT', $node_url, $request_options);
+     $this->assertSame(200, $response->getStatusCode());
+     $doc = Json::decode((string) $response->getBody());
+     $this->assertSame('2018-12-20', $doc['data']['attributes']['when']);
+@@ -869,7 +869,7 @@ public function testPatchToIncludeUrlDoesNotReturnIncludeFromIssue3026030() {
+         ],
+       ],
+     ];
+-    $response = $this->request('PATCH', $url, $request_options);
++    $response = $this->request('PUT', $url, $request_options);
+     $this->assertSame(200, $response->getStatusCode());
+     $doc = Json::decode((string) $response->getBody());
+     $this->assertArrayHasKey('included', $doc);
+@@ -1119,7 +1119,7 @@ public function testNonTranslatableEntityUpdatesFromIssue3043168() {
+     ];
+     // Issue the PATCH request and verify that the test entity was successfully
+     // updated.
+-    $response = $this->request('PATCH', $entity_url, $request_options);
++    $response = $this->request('PUT', $entity_url, $request_options);
+     $this->assertSame(200, $response->getStatusCode(), (string) $response->getBody());
+     $response_document = Json::decode($response->getBody());
+     // Ensure that the entity's langcode attribute is still 'und' and the name
+@@ -1195,7 +1195,7 @@ public function testEmptyMapFieldTypeDenormalization() {
+       'Accept' => 'application/vnd.api+json',
+     ];
+     $request_options[RequestOptions::BODY] = Json::encode($doc);
+-    $response = $this->request('PATCH', $url, $request_options);
++    $response = $this->request('PUT', $url, $request_options);
+     $this->assertSame(200, $response->getStatusCode());
+     $this->assertSame($doc['data']['attributes']['data'], Json::decode((string) $response->getBody())['data']['attributes']['data']);
+   }
+@@ -1337,7 +1337,7 @@ public function testNonCacheableMethods() {
+     $methods = [
+       'HEAD',
+       'GET',
+-      'PATCH',
++      'PUT',
+       'DELETE',
+     ];
+     $non_post_request_options = $base_request_options + [
+diff --git a/core/modules/jsonapi/tests/src/Functional/MediaTest.php b/core/modules/jsonapi/tests/src/Functional/MediaTest.php
+index c9812983ce..ef295bff73 100644
+--- a/core/modules/jsonapi/tests/src/Functional/MediaTest.php
++++ b/core/modules/jsonapi/tests/src/Functional/MediaTest.php
+@@ -71,7 +71,7 @@ protected function setUpAuthorization($method) {
+         $this->grantPermissionsToTestedRole(['create camelids media', 'access content']);
+         break;
+ 
+-      case 'PATCH':
++      case 'PUT':
+         $this->grantPermissionsToTestedRole(['edit any camelids media']);
+         // @todo Remove this in https://www.drupal.org/node/2824851.
+         $this->grantPermissionsToTestedRole(['access content']);
+@@ -327,7 +327,7 @@ protected function getExpectedUnauthorizedAccessMessage($method) {
+       case 'POST':
+         return "The following permissions are required: 'administer media' OR 'create media' OR 'create camelids media'.";
+ 
+-      case 'PATCH':
++      case 'PUT':
+         return "The following permissions are required: 'update any media' OR 'update own media' OR 'camelids: edit any media' OR 'camelids: edit own media'.";
+ 
+       case 'DELETE':
+diff --git a/core/modules/jsonapi/tests/src/Functional/MenuLinkContentTest.php b/core/modules/jsonapi/tests/src/Functional/MenuLinkContentTest.php
+index b1e7fe299a..f15d81b8cd 100644
+--- a/core/modules/jsonapi/tests/src/Functional/MenuLinkContentTest.php
++++ b/core/modules/jsonapi/tests/src/Functional/MenuLinkContentTest.php
+@@ -236,7 +236,7 @@ public function testLinkOptionsSerialization() {
+ 
+     // Ensure that the entity can be updated using a response document.
+     $request_options[RequestOptions::BODY] = $response_body;
+-    $response = $this->request('PATCH', $url, $request_options);
++    $response = $this->request('PUT', $url, $request_options);
+     $this->assertResourceResponse(200, Json::decode($response_body), $response);
+   }
+ 
+diff --git a/core/modules/jsonapi/tests/src/Functional/NodeTest.php b/core/modules/jsonapi/tests/src/Functional/NodeTest.php
+index 6e3d99a762..0ddf159ed1 100644
+--- a/core/modules/jsonapi/tests/src/Functional/NodeTest.php
++++ b/core/modules/jsonapi/tests/src/Functional/NodeTest.php
+@@ -86,7 +86,7 @@ protected function setUpAuthorization($method) {
+         $this->grantPermissionsToTestedRole(['access content', 'create camelids content']);
+         break;
+ 
+-      case 'PATCH':
++      case 'PUT':
+         // Do not grant the 'create url aliases' permission to test the case
+         // when the path field is protected/not accessible, see
+         // \Drupal\Tests\rest\Functional\EntityResource\Term\TermResourceTestBase
+@@ -261,7 +261,7 @@ protected function getExpectedUnauthorizedAccessMessage($method) {
+     switch ($method) {
+       case 'GET':
+       case 'POST':
+-      case 'PATCH':
++      case 'PUT':
+       case 'DELETE':
+         return "The 'access content' permission is required.";
+     }
+@@ -277,7 +277,7 @@ protected function getExpectedUnauthorizedAccessMessage($method) {
+    */
+   public function testPatchPath() {
+     $this->setUpAuthorization('GET');
+-    $this->setUpAuthorization('PATCH');
++    $this->setUpAuthorization('PUT');
+     $this->config('jsonapi.settings')->set('read_only', FALSE)->save(TRUE);
+ 
+     // @todo Remove line below in favor of commented line in https://www.drupal.org/project/drupal/issues/2878463.
+@@ -297,14 +297,14 @@ public function testPatchPath() {
+     $request_options[RequestOptions::BODY] = Json::encode($normalization);
+ 
+     // PATCH request: 403 when creating URL aliases unauthorized.
+-    $response = $this->request('PATCH', $url, $request_options);
++    $response = $this->request('PUT', $url, $request_options);
+     $this->assertResourceErrorResponse(403, "The current user is not allowed to PATCH the selected field (path). The following permissions are required: 'create url aliases' OR 'administer url aliases'.", $url, $response, '/data/attributes/path');
+ 
+     // Grant permission to create URL aliases.
+     $this->grantPermissionsToTestedRole(['create url aliases']);
+ 
+     // Repeat PATCH request: 200.
+-    $response = $this->request('PATCH', $url, $request_options);
++    $response = $this->request('PUT', $url, $request_options);
+     $this->assertResourceResponse(200, FALSE, $response);
+     $updated_normalization = Json::decode((string) $response->getBody());
+     $this->assertSame($normalization['data']['attributes']['path']['alias'], $updated_normalization['data']['attributes']['path']['alias']);
+diff --git a/core/modules/jsonapi/tests/src/Functional/ResourceTestBase.php b/core/modules/jsonapi/tests/src/Functional/ResourceTestBase.php
+index 2f358158f5..61fec6a894 100644
+--- a/core/modules/jsonapi/tests/src/Functional/ResourceTestBase.php
++++ b/core/modules/jsonapi/tests/src/Functional/ResourceTestBase.php
+@@ -1337,7 +1337,7 @@ public function testRelationships() {
+     $this->config('jsonapi.settings')->set('read_only', FALSE)->save(TRUE);
+     $this->doTestRelationshipMutation($request_options);
+     // Grant entity-level edit access.
+-    $this->setUpAuthorization('PATCH');
++    $this->setUpAuthorization('PUT');
+     $this->doTestRelationshipMutation($request_options);
+     // Field edit access is still forbidden, grant it.
+     $this->grantPermissionsToTestedRole([
+@@ -1469,7 +1469,7 @@ protected function doTestRelationshipMutation(array $request_options) {
+       $response = $this->request('POST', $url, $request_options);
+       $this->assertResourceErrorResponse(400, 'Empty request body.', $url, $response, FALSE);
+       // Test PATCH: empty body.
+-      $response = $this->request('PATCH', $url, $request_options);
++      $response = $this->request('PUT', $url, $request_options);
+       $this->assertResourceErrorResponse(400, 'Empty request body.', $url, $response, FALSE);
+ 
+       // Test POST: empty data.
+@@ -1478,7 +1478,7 @@ protected function doTestRelationshipMutation(array $request_options) {
+       $this->assertResourceResponse(204, NULL, $response);
+       // Test PATCH: empty data.
+       $request_options[RequestOptions::BODY] = Json::encode(['data' => []]);
+-      $response = $this->request('PATCH', $url, $request_options);
++      $response = $this->request('PUT', $url, $request_options);
+       $this->assertResourceResponse(204, NULL, $response);
+ 
+       // Test POST: data as resource identifier, not array of identifiers.
+@@ -1487,7 +1487,7 @@ protected function doTestRelationshipMutation(array $request_options) {
+       $this->assertResourceErrorResponse(400, 'Invalid body payload for the relationship.', $url, $response, FALSE);
+       // Test PATCH: data as resource identifier, not array of identifiers.
+       $request_options[RequestOptions::BODY] = Json::encode(['data' => $target_identifier]);
+-      $response = $this->request('PATCH', $url, $request_options);
++      $response = $this->request('PUT', $url, $request_options);
+       $this->assertResourceErrorResponse(400, 'Invalid body payload for the relationship.', $url, $response, FALSE);
+ 
+       // Test POST: missing the 'type' field.
+@@ -1496,7 +1496,7 @@ protected function doTestRelationshipMutation(array $request_options) {
+       $this->assertResourceErrorResponse(400, 'Invalid body payload for the relationship.', $url, $response, FALSE);
+       // Test PATCH: missing the 'type' field.
+       $request_options[RequestOptions::BODY] = Json::encode(['data' => array_intersect_key($target_identifier, ['id' => 'id'])]);
+-      $response = $this->request('PATCH', $url, $request_options);
++      $response = $this->request('PUT', $url, $request_options);
+       $this->assertResourceErrorResponse(400, 'Invalid body payload for the relationship.', $url, $response, FALSE);
+ 
+       // If the base resource type is the same as that of the target's (as it
+@@ -1520,7 +1520,7 @@ protected function doTestRelationshipMutation(array $request_options) {
+ 
+       // Test PATCH: duplicate targets, no arity.
+       $request_options[RequestOptions::BODY] = Json::encode(['data' => [$target_identifier, $target_identifier]]);
+-      $response = $this->request('PATCH', $url, $request_options);
++      $response = $this->request('PUT', $url, $request_options);
+       $this->assertResourceErrorResponse(400, 'Duplicate relationships are not permitted. Use `meta.arity` to distinguish resource identifiers with matching `type` and `id` values.', $url, $response, FALSE);
+ 
+       // Test POST: success.
+@@ -1548,7 +1548,7 @@ protected function doTestRelationshipMutation(array $request_options) {
+           $target_identifier + ['meta' => ['arity' => 1]],
+         ],
+       ]);
+-      $response = $this->request('PATCH', $url, $request_options);
++      $response = $this->request('PUT', $url, $request_options);
+       $this->assertResourceResponse(204, NULL, $response);
+ 
+       // Test POST: success, relationship already exists, new arity.
+@@ -1591,7 +1591,7 @@ protected function doTestRelationshipMutation(array $request_options) {
+           $target_identifier + ['meta' => ['arity' => 2]],
+         ],
+       ]);
+-      $response = $this->request('PATCH', $url, $request_options);
++      $response = $this->request('PUT', $url, $request_options);
+       // 204 no content. PATCH data matches existing data.
+       $this->assertResourceResponse(204, NULL, $response);
+ 
+@@ -1635,7 +1635,7 @@ protected function doTestRelationshipMutation(array $request_options) {
+           $target_identifier + ['meta' => ['arity' => 3]],
+         ],
+       ]);
+-      $response = $this->request('PATCH', $url, $request_options);
++      $response = $this->request('PUT', $url, $request_options);
+       $resource->set($relationship_field_name, [$target_resource, $target_resource]);
+       $expected_document = $this->getExpectedGetRelationshipDocument($relationship_field_name, $resource);
+       $expected_document['data'][0] += ['meta' => ['arity' => 0]];
+@@ -1662,7 +1662,7 @@ protected function doTestRelationshipMutation(array $request_options) {
+       $message = 'The current user is not allowed to edit this relationship.';
+       $message .= ($reason = $update_access->getReason()) ? ' ' . $reason : '';
+       $this->assertResourceErrorResponse(403, $message, $url, $response, FALSE);
+-      $response = $this->request('PATCH', $url, $request_options);
++      $response = $this->request('PUT', $url, $request_options);
+       $this->assertResourceErrorResponse(403, $message, $url, $response, FALSE);
+       $response = $this->request('DELETE', $url, $request_options);
+       $this->assertResourceErrorResponse(403, $message, $url, $response, FALSE);
+@@ -2216,39 +2216,39 @@ public function testPatchIndividual() {
+     $request_options = NestedArray::mergeDeep($request_options, $this->getAuthenticationRequestOptions());
+ 
+     // DX: 405 when read-only mode is enabled.
+-    $response = $this->request('PATCH', $url, $request_options);
++    $response = $this->request('PUT', $url, $request_options);
+     $this->assertResourceErrorResponse(405, sprintf("JSON:API is configured to accept only read operations. Site administrators can configure this at %s.", Url::fromUri('base:/admin/config/services/jsonapi')->setAbsolute()->toString(TRUE)->getGeneratedUrl()), $url, $response);
+     $this->assertSame(['GET'], $response->getHeader('Allow'));
+ 
+     $this->config('jsonapi.settings')->set('read_only', FALSE)->save(TRUE);
+ 
+     // DX: 415 when no Content-Type request header.
+-    $response = $this->request('PATCH', $url, $request_options);
++    $response = $this->request('PUT', $url, $request_options);
+     $this->assertSame(415, $response->getStatusCode());
+ 
+     $request_options[RequestOptions::HEADERS]['Content-Type'] = 'application/vnd.api+json';
+ 
+     // DX: 403 when unauthorized.
+-    $response = $this->request('PATCH', $url, $request_options);
+-    $reason = $this->getExpectedUnauthorizedAccessMessage('PATCH');
++    $response = $this->request('PUT', $url, $request_options);
++    $reason = $this->getExpectedUnauthorizedAccessMessage('PUT');
+     $this->assertResourceErrorResponse(403, (string) $reason, $url, $response);
+ 
+-    $this->setUpAuthorization('PATCH');
++    $this->setUpAuthorization('PUT');
+ 
+     // DX: 400 when no request body.
+-    $response = $this->request('PATCH', $url, $request_options);
++    $response = $this->request('PUT', $url, $request_options);
+     $this->assertResourceErrorResponse(400, 'Empty request body.', $url, $response, FALSE);
+ 
+     $request_options[RequestOptions::BODY] = $unparseable_request_body;
+ 
+     // DX: 400 when unparseable request body.
+-    $response = $this->request('PATCH', $url, $request_options);
++    $response = $this->request('PUT', $url, $request_options);
+     $this->assertResourceErrorResponse(400, 'Syntax error', $url, $response, FALSE);
+ 
+     // DX: 422 when invalid entity: multiple values sent for single-value field.
+     if ($this->entity->getEntityType()->hasKey('label')) {
+       $request_options[RequestOptions::BODY] = $parseable_invalid_request_body;
+-      $response = $this->request('PATCH', $url, $request_options);
++      $response = $this->request('PUT', $url, $request_options);
+       $label_field = $this->entity->getEntityType()->getKey('label');
+       $label_field_capitalized = $this->entity->getFieldDefinition($label_field)->getLabel();
+       $this->assertResourceErrorResponse(422, "$label_field: $label_field_capitalized: this field cannot hold more than 1 values.", NULL, $response, '/data/attributes/' . $label_field);
+@@ -2257,19 +2257,19 @@ public function testPatchIndividual() {
+     $request_options[RequestOptions::BODY] = $parseable_invalid_request_body_2;
+ 
+     // DX: 403 when entity contains field without 'edit' access.
+-    $response = $this->request('PATCH', $url, $request_options);
++    $response = $this->request('PUT', $url, $request_options);
+     $this->assertResourceErrorResponse(403, "The current user is not allowed to PATCH the selected field (field_rest_test).", $url, $response, '/data/attributes/field_rest_test');
+ 
+     // DX: 403 when entity trying to update an entity's ID field.
+     $request_options[RequestOptions::BODY] = Json::encode($this->makeNormalizationInvalid($this->getPatchDocument(), 'id'));
+-    $response = $this->request('PATCH', $url, $request_options);
++    $response = $this->request('PUT', $url, $request_options);
+     $id_field_name = $this->entity->getEntityType()->getKey('id');
+     $this->assertResourceErrorResponse(403, "The current user is not allowed to PATCH the selected field ($id_field_name). The entity ID cannot be changed.", $url, $response, "/data/attributes/$id_field_name");
+ 
+     if ($this->entity->getEntityType()->hasKey('uuid')) {
+       // DX: 400 when entity trying to update an entity's UUID field.
+       $request_options[RequestOptions::BODY] = Json::encode($this->makeNormalizationInvalid($this->getPatchDocument(), 'uuid'));
+-      $response = $this->request('PATCH', $url, $request_options);
++      $response = $this->request('PUT', $url, $request_options);
+       $this->assertResourceErrorResponse(400, sprintf("The selected entity (%s) does not match the ID in the payload (%s).", $this->entity->uuid(), $this->anotherEntity->uuid()), $url, $response, FALSE);
+     }
+ 
+@@ -2278,7 +2278,7 @@ public function testPatchIndividual() {
+     // DX: 403 when entity contains field without 'edit' nor 'view' access, even
+     // when the value for that field matches the current value. This is allowed
+     // in principle, but leads to information disclosure.
+-    $response = $this->request('PATCH', $url, $request_options);
++    $response = $this->request('PUT', $url, $request_options);
+     $this->assertResourceErrorResponse(403, "The current user is not allowed to PATCH the selected field (field_rest_test).", $url, $response, '/data/attributes/field_rest_test');
+ 
+     // DX: 403 when sending PATCH request with updated read-only fields.
+@@ -2288,7 +2288,7 @@ public function testPatchIndividual() {
+     // back to its original value, repeat.
+     foreach (static::$patchProtectedFieldNames as $patch_protected_field_name => $reason) {
+       $request_options[RequestOptions::BODY] = Json::encode($this->normalize($modified_entity, $url));
+-      $response = $this->request('PATCH', $url, $request_options);
++      $response = $this->request('PUT', $url, $request_options);
+       $this->assertResourceErrorResponse(403, "The current user is not allowed to PATCH the selected field (" . $patch_protected_field_name . ")." . ($reason !== NULL ? ' ' . $reason : ''), $url->setAbsolute(), $response, '/data/attributes/' . $patch_protected_field_name);
+       $modified_entity->get($patch_protected_field_name)->setValue($original_values[$patch_protected_field_name]);
+     }
+@@ -2296,13 +2296,13 @@ public function testPatchIndividual() {
+     $request_options[RequestOptions::BODY] = $parseable_invalid_request_body_4;
+ 
+     // DX: 422 when request document contains non-existent field.
+-    $response = $this->request('PATCH', $url, $request_options);
++    $response = $this->request('PUT', $url, $request_options);
+     $this->assertResourceErrorResponse(422, sprintf("The attribute field_nonexistent does not exist on the %s resource type.", static::$resourceTypeName), $url, $response, FALSE);
+ 
+     // DX: 422 when updating a relationship field under attributes.
+     if (isset($parseable_invalid_request_body_5)) {
+       $request_options[RequestOptions::BODY] = $parseable_invalid_request_body_5;
+-      $response = $this->request('PATCH', $url, $request_options);
++      $response = $this->request('PUT', $url, $request_options);
+       $this->assertResourceErrorResponse(422, "The following relationship fields were provided as attributes: [ field_jsonapi_test_entity_ref ]", $url, $response, FALSE);
+     }
+ 
+@@ -2310,7 +2310,7 @@ public function testPatchIndividual() {
+     // read-only ones, but with unchanged values).
+     $valid_request_body = NestedArray::mergeDeep($this->normalize($this->entity, $url), $this->getPatchDocument());
+     $request_options[RequestOptions::BODY] = Json::encode($valid_request_body);
+-    $response = $this->request('PATCH', $url, $request_options);
++    $response = $this->request('PUT', $url, $request_options);
+     $this->assertResourceResponse(200, FALSE, $response);
+     $updated_entity = $this->entityLoadUnchanged($this->entity->id());
+     $this->assertSame(static::$newRevisionsShouldBeAutomatic, $prior_revision_id < (int) $updated_entity->getRevisionId());
+@@ -2320,13 +2320,13 @@ public function testPatchIndividual() {
+     $request_options[RequestOptions::HEADERS]['Content-Type'] = 'text/xml';
+ 
+     // DX: 415 when request body in existing but not allowed format.
+-    $response = $this->request('PATCH', $url, $request_options);
++    $response = $this->request('PUT', $url, $request_options);
+     $this->assertSame(415, $response->getStatusCode());
+ 
+     $request_options[RequestOptions::HEADERS]['Content-Type'] = 'application/vnd.api+json';
+ 
+     // 200 for well-formed request.
+-    $response = $this->request('PATCH', $url, $request_options);
++    $response = $this->request('PUT', $url, $request_options);
+     $this->assertResourceResponse(200, FALSE, $response);
+     $this->assertFalse($response->hasHeader('X-Drupal-Cache'));
+     // Assert that the entity was indeed updated, and that the response body
+@@ -2378,7 +2378,7 @@ public function testPatchIndividual() {
+     $doc_remove_item = $doc_multi_value_tests;
+     unset($doc_remove_item['data']['attributes']['field_rest_test_multivalue'][0]);
+     $request_options[RequestOptions::BODY] = Json::encode($doc_remove_item, 'api_json');
+-    $response = $this->request('PATCH', $url, $request_options);
++    $response = $this->request('PUT', $url, $request_options);
+     $this->assertResourceResponse(200, FALSE, $response);
+     $updated_entity = $this->entityLoadUnchanged($this->entity->id());
+     $this->assertSame([0 => ['value' => 'Two']], $updated_entity->get('field_rest_test_multivalue')->getValue());
+@@ -2389,7 +2389,7 @@ public function testPatchIndividual() {
+     $doc_add_items = $doc_multi_value_tests;
+     $doc_add_items['data']['attributes']['field_rest_test_multivalue'][2] = ['value' => 'Three'];
+     $request_options[RequestOptions::BODY] = Json::encode($doc_add_items);
+-    $response = $this->request('PATCH', $url, $request_options);
++    $response = $this->request('PUT', $url, $request_options);
+     $this->assertResourceResponse(200, FALSE, $response);
+     $expected_document = [
+       0 => ['value' => 'One'],
+@@ -2421,7 +2421,7 @@ public function testPatchIndividual() {
+     $this->grantPermissionsToTestedRole(['use editorial transition publish']);
+     $doc_add_items['data']['attributes']['field_rest_test_multivalue'][2] = ['value' => '3'];
+     $request_options[RequestOptions::BODY] = Json::encode($doc_add_items);
+-    $response = $this->request('PATCH', $url, $request_options);
++    $response = $this->request('PUT', $url, $request_options);
+     $this->assertResourceResponse(200, FALSE, $response);
+     $expected_document = [
+       0 => ['value' => 'One'],
+@@ -2451,7 +2451,7 @@ public function testPatchIndividual() {
+         'id' => $this->entity->uuid(),
+       ],
+     ]);
+-    $this->setUpAuthorization('PATCH');
++    $this->setUpAuthorization('PUT');
+     $this->grantPermissionsToTestedRole([
+       'use editorial transition create_new_draft',
+       'use editorial transition archived_published',
+@@ -2462,14 +2462,14 @@ public function testPatchIndividual() {
+     $updated_entity->set('moderation_state', 'draft');
+     $updated_entity->setNewRevision();
+     $updated_entity->save();
+-    $actual_response = $this->request('PATCH', $url, $request_options);
++    $actual_response = $this->request('PUT', $url, $request_options);
+     $this->assertResourceErrorResponse(400, 'Updating a resource object that has a working copy is not yet supported. See https://www.drupal.org/project/drupal/issues/2795279.', $url, $actual_response);
+ 
+     // Allow PATCHing an unpublished default revision.
+     $updated_entity->set('moderation_state', 'archived');
+     $updated_entity->setNewRevision();
+     $updated_entity->save();
+-    $actual_response = $this->request('PATCH', $url, $request_options);
++    $actual_response = $this->request('PUT', $url, $request_options);
+     $this->assertSame(200, $actual_response->getStatusCode());
+ 
+     // Allow PATCHing an unpublished default revision. (An entity that
+@@ -2478,14 +2478,14 @@ public function testPatchIndividual() {
+     $updated_entity->set('moderation_state', 'draft');
+     $updated_entity->setNewRevision();
+     $updated_entity->save();
+-    $actual_response = $this->request('PATCH', $url, $request_options);
++    $actual_response = $this->request('PUT', $url, $request_options);
+     $this->assertSame(200, $actual_response->getStatusCode());
+ 
+     // Allow PATCHing a published default revision.
+     $updated_entity->set('moderation_state', 'published');
+     $updated_entity->setNewRevision();
+     $updated_entity->save();
+-    $actual_response = $this->request('PATCH', $url, $request_options);
++    $actual_response = $this->request('PUT', $url, $request_options);
+     $this->assertSame(200, $actual_response->getStatusCode());
+   }
+ 
+@@ -3205,7 +3205,7 @@ public function testRevisions() {
+     ];
+     $request_options[RequestOptions::HEADERS]['Content-Type'] = 'application/vnd.api+json';
+     foreach ($individual_urls as $url) {
+-      foreach (['PATCH', 'DELETE'] as $method) {
++      foreach (['PUT', 'DELETE'] as $method) {
+         $actual_response = $this->request($method, $url, $request_options);
+         $this->assertResourceErrorResponse(400, sprintf('%s requests with a `%s` query parameter are not supported.', $method, 'resourceVersion'), $url, $actual_response);
+       }
+@@ -3220,7 +3220,7 @@ public function testRevisions() {
+       $rel_working_copy_relationship_url,
+     ];
+     foreach ($relationship_urls as $url) {
+-      foreach (['PATCH', 'POST', 'DELETE'] as $method) {
++      foreach (['PUT', 'POST', 'DELETE'] as $method) {
+         $actual_response = $this->request($method, $url, $request_options);
+         $this->assertResourceErrorResponse(400, sprintf('%s requests with a `%s` query parameter are not supported.', $method, 'resourceVersion'), $url, $actual_response);
+       }
+diff --git a/core/modules/jsonapi/tests/src/Functional/SearchPageTest.php b/core/modules/jsonapi/tests/src/Functional/SearchPageTest.php
+index fc4ffaa49b..52b4f88e53 100644
+--- a/core/modules/jsonapi/tests/src/Functional/SearchPageTest.php
++++ b/core/modules/jsonapi/tests/src/Functional/SearchPageTest.php
+@@ -49,7 +49,7 @@ protected function setUpAuthorization($method) {
+         break;
+ 
+       case 'POST':
+-      case 'PATCH':
++      case 'PUT':
+       case 'DELETE':
+         $this->grantPermissionsToTestedRole(['administer search']);
+         break;
+diff --git a/core/modules/jsonapi/tests/src/Functional/ShortcutSetTest.php b/core/modules/jsonapi/tests/src/Functional/ShortcutSetTest.php
+index a5e080b8d2..0986420c5b 100644
+--- a/core/modules/jsonapi/tests/src/Functional/ShortcutSetTest.php
++++ b/core/modules/jsonapi/tests/src/Functional/ShortcutSetTest.php
+@@ -49,7 +49,7 @@ protected function setUpAuthorization($method) {
+         break;
+ 
+       case 'POST':
+-      case 'PATCH':
++      case 'PUT':
+         $this->grantPermissionsToTestedRole(['access shortcuts', 'customize shortcut links']);
+         break;
+ 
+diff --git a/core/modules/jsonapi/tests/src/Functional/TermTest.php b/core/modules/jsonapi/tests/src/Functional/TermTest.php
+index 6638c3821c..873a9b449d 100644
+--- a/core/modules/jsonapi/tests/src/Functional/TermTest.php
++++ b/core/modules/jsonapi/tests/src/Functional/TermTest.php
+@@ -73,7 +73,7 @@ protected function setUpAuthorization($method) {
+         $this->grantPermissionsToTestedRole(['create terms in camelids']);
+         break;
+ 
+-      case 'PATCH':
++      case 'PUT':
+         // Grant the 'create url aliases' permission to test the case when
+         // the path field is accessible, see
+         // \Drupal\Tests\rest\Functional\EntityResource\Node\NodeResourceTestBase
+@@ -371,7 +371,7 @@ protected function getExpectedUnauthorizedAccessMessage($method) {
+       case 'POST':
+         return "The following permissions are required: 'create terms in camelids' OR 'administer taxonomy'.";
+ 
+-      case 'PATCH':
++      case 'PUT':
+         return "The following permissions are required: 'edit terms in camelids' OR 'administer taxonomy'.";
+ 
+       case 'DELETE':
+@@ -401,7 +401,7 @@ protected function getExpectedUnauthorizedAccessCacheability() {
+    */
+   public function testPatchPath() {
+     $this->setUpAuthorization('GET');
+-    $this->setUpAuthorization('PATCH');
++    $this->setUpAuthorization('PUT');
+     $this->config('jsonapi.settings')->set('read_only', FALSE)->save(TRUE);
+ 
+     // @todo Remove line below in favor of commented line in https://www.drupal.org/project/drupal/issues/2878463.
+@@ -423,7 +423,7 @@ public function testPatchPath() {
+     $request_options[RequestOptions::BODY] = Json::encode($normalization);
+ 
+     // PATCH request: 200.
+-    $response = $this->request('PATCH', $url, $request_options);
++    $response = $this->request('PUT', $url, $request_options);
+     $this->assertResourceResponse(200, FALSE, $response);
+     $updated_normalization = Json::decode((string) $response->getBody());
+     $this->assertSame($normalization['data']['attributes']['path']['alias'], $updated_normalization['data']['attributes']['path']['alias']);
+diff --git a/core/modules/jsonapi/tests/src/Functional/UserTest.php b/core/modules/jsonapi/tests/src/Functional/UserTest.php
+index 365905b28e..6693b56e7f 100644
+--- a/core/modules/jsonapi/tests/src/Functional/UserTest.php
++++ b/core/modules/jsonapi/tests/src/Functional/UserTest.php
+@@ -89,7 +89,7 @@ protected function setUpAuthorization($method) {
+         break;
+ 
+       case 'POST':
+-      case 'PATCH':
++      case 'PUT':
+       case 'DELETE':
+         $this->grantPermissionsToTestedRole(['administer users']);
+         break;
+@@ -200,7 +200,7 @@ protected function getExpectedUnauthorizedAccessMessage($method) {
+       case 'GET':
+         return "The 'access user profiles' permission is required and the user must be active.";
+ 
+-      case 'PATCH':
++      case 'PUT':
+         return "Users can only update their own account, unless they have the 'administer users' permission.";
+ 
+       case 'DELETE':
+@@ -235,28 +235,28 @@ public function testPatchDxForSecuritySensitiveBaseFields() {
+     $request_options[RequestOptions::BODY] = Json::encode($normalization);
+ 
+     // DX: 405 when read-only mode is enabled.
+-    $response = $this->request('PATCH', $url, $request_options);
++    $response = $this->request('PUT', $url, $request_options);
+     $this->assertResourceErrorResponse(405, sprintf("JSON:API is configured to accept only read operations. Site administrators can configure this at %s.", Url::fromUri('base:/admin/config/services/jsonapi')->setAbsolute()->toString(TRUE)->getGeneratedUrl()), $url, $response);
+     $this->assertSame(['GET'], $response->getHeader('Allow'));
+ 
+     $this->config('jsonapi.settings')->set('read_only', FALSE)->save(TRUE);
+ 
+     // DX: 422 when changing email without providing the password.
+-    $response = $this->request('PATCH', $url, $request_options);
++    $response = $this->request('PUT', $url, $request_options);
+     $this->assertResourceErrorResponse(422, 'mail: Your current password is missing or incorrect; it\'s required to change the Email.', NULL, $response, '/data/attributes/mail');
+ 
+     $normalization['data']['attributes']['pass']['existing'] = 'wrong';
+     $request_options[RequestOptions::BODY] = Json::encode($normalization);
+ 
+     // DX: 422 when changing email while providing a wrong password.
+-    $response = $this->request('PATCH', $url, $request_options);
++    $response = $this->request('PUT', $url, $request_options);
+     $this->assertResourceErrorResponse(422, 'mail: Your current password is missing or incorrect; it\'s required to change the Email.', NULL, $response, '/data/attributes/mail');
+ 
+     $normalization['data']['attributes']['pass']['existing'] = $this->account->passRaw;
+     $request_options[RequestOptions::BODY] = Json::encode($normalization);
+ 
+     // 200 for well-formed request.
+-    $response = $this->request('PATCH', $url, $request_options);
++    $response = $this->request('PUT', $url, $request_options);
+     $this->assertResourceResponse(200, FALSE, $response);
+ 
+     // Test case 2: changing password.
+@@ -267,14 +267,14 @@ public function testPatchDxForSecuritySensitiveBaseFields() {
+     $request_options[RequestOptions::BODY] = Json::encode($normalization);
+ 
+     // DX: 422 when changing password without providing the current password.
+-    $response = $this->request('PATCH', $url, $request_options);
++    $response = $this->request('PUT', $url, $request_options);
+     $this->assertResourceErrorResponse(422, 'pass: Your current password is missing or incorrect; it\'s required to change the Password.', NULL, $response, '/data/attributes/pass');
+ 
+     $normalization['data']['attributes']['pass']['existing'] = $this->account->passRaw;
+     $request_options[RequestOptions::BODY] = Json::encode($normalization);
+ 
+     // 200 for well-formed request.
+-    $response = $this->request('PATCH', $url, $request_options);
++    $response = $this->request('PUT', $url, $request_options);
+     $this->assertResourceResponse(200, FALSE, $response);
+ 
+     // Verify that we can log in with the new password.
+@@ -295,13 +295,13 @@ public function testPatchDxForSecuritySensitiveBaseFields() {
+     $request_options[RequestOptions::BODY] = Json::encode($normalization);
+ 
+     // DX: 403 when modifying username without required permission.
+-    $response = $this->request('PATCH', $url, $request_options);
++    $response = $this->request('PUT', $url, $request_options);
+     $this->assertResourceErrorResponse(403, 'The current user is not allowed to PATCH the selected field (name).', $url, $response, '/data/attributes/name');
+ 
+     $this->grantPermissionsToTestedRole(['change own username']);
+ 
+     // 200 for well-formed request.
+-    $response = $this->request('PATCH', $url, $request_options);
++    $response = $this->request('PUT', $url, $request_options);
+     $this->assertResourceResponse(200, FALSE, $response);
+ 
+     // Verify that we can log in with the new username.
+@@ -353,7 +353,7 @@ public function testPatchSecurityOtherUser() {
+     $request_options[RequestOptions::BODY] = Json::encode($normalization);
+ 
+     // DX: 405 when read-only mode is enabled.
+-    $response = $this->request('PATCH', $url, $request_options);
++    $response = $this->request('PUT', $url, $request_options);
+     $this->assertResourceErrorResponse(405, sprintf("JSON:API is configured to accept only read operations. Site administrators can configure this at %s.", Url::fromUri('base:/admin/config/services/jsonapi')->setAbsolute()->toString(TRUE)->getGeneratedUrl()), $url, $response);
+     $this->assertSame(['GET'], $response->getHeader('Allow'));
+ 
+@@ -366,7 +366,7 @@ public function testPatchSecurityOtherUser() {
+     $user1['data']['attributes']['name'] = 'another_user_name';
+     $user1['data']['attributes']['pass']['existing'] = $this->account->passRaw;
+     $request_options[RequestOptions::BODY] = Json::encode($user1);
+-    $response = $this->request('PATCH', $url, $request_options);
++    $response = $this->request('PUT', $url, $request_options);
+     // Ensure the email address has not changed.
+     $this->assertEquals('admin@example.com', $this->entityStorage->loadUnchanged(1)->getEmail());
+     $this->assertResourceErrorResponse(403, 'The current user is not allowed to PATCH the selected field (uid). The entity ID cannot be changed.', $url, $response, '/data/attributes/uid');
+@@ -588,7 +588,7 @@ public function testCollectionFilterAccess() {
+    */
+   public function testResaveAccountName() {
+     $this->config('jsonapi.settings')->set('read_only', FALSE)->save(TRUE);
+-    $this->setUpAuthorization('PATCH');
++    $this->setUpAuthorization('PUT');
+ 
+     $original_name = $this->entity->get('name')->value;
+ 
+@@ -602,7 +602,7 @@ public function testResaveAccountName() {
+     // Send the unchanged data back.
+     $request_options[RequestOptions::BODY] = (string) $response->getBody();
+     $request_options[RequestOptions::HEADERS]['Content-Type'] = 'application/vnd.api+json';
+-    $response = $this->request('PATCH', $url, $request_options);
++    $response = $this->request('PUT', $url, $request_options);
+     $this->assertEquals(200, $response->getStatusCode());
+ 
+     // Load the user entity again, make sure the name was not changed.
+diff --git a/core/modules/jsonapi/tests/src/Unit/Routing/RoutesTest.php b/core/modules/jsonapi/tests/src/Unit/Routing/RoutesTest.php
+index e6c08a6559..efa50a1465 100644
+--- a/core/modules/jsonapi/tests/src/Unit/Routing/RoutesTest.php
++++ b/core/modules/jsonapi/tests/src/Unit/Routing/RoutesTest.php
+@@ -122,7 +122,7 @@ public function testRoutesIndividual() {
+     $route = $iterator->offsetGet('jsonapi.entity_type_1--bundle_1_1.individual.patch');
+     $this->assertSame('/jsonapi/entity_type_1/bundle_1_1/{entity}', $route->getPath());
+     $this->assertSame('entity_type_1--bundle_1_1', $route->getDefault(Routes::RESOURCE_TYPE_KEY));
+-    $this->assertEquals(['PATCH'], $route->getMethods());
++    $this->assertEquals(['PUT'], $route->getMethods());
+     $this->assertSame(Routes::CONTROLLER_SERVICE_NAME . ':patchIndividual', $route->getDefault(RouteObjectInterface::CONTROLLER_NAME));
+     $this->assertSame(['lorem', 'ipsum'], $route->getOption('_auth'));
+     $this->assertEquals([
+diff --git a/core/modules/layout_builder/tests/src/Functional/Rest/OverrideSectionsTest.php b/core/modules/layout_builder/tests/src/Functional/Rest/OverrideSectionsTest.php
+index 9ea9fccec1..e378f2df5f 100644
+--- a/core/modules/layout_builder/tests/src/Functional/Rest/OverrideSectionsTest.php
++++ b/core/modules/layout_builder/tests/src/Functional/Rest/OverrideSectionsTest.php
+@@ -121,7 +121,7 @@ public function testOverrideField() {
+       ],
+     ];
+     $response = $this->request(
+-      'PATCH',
++      'PUT',
+       Url::fromRoute(
+         'rest.entity.node.PATCH',
+         ['node' => 1]
+@@ -139,7 +139,7 @@ public function testOverrideField() {
+     $patch_data['title'][0]['value'] = 'This title will not save.';
+     $patch_data['layout_builder__layout'] = [];
+     $response = $this->request(
+-      'PATCH',
++      'PUT',
+       Url::fromRoute(
+         'rest.entity.node.PATCH',
+         ['node' => 1]
+diff --git a/core/modules/media/tests/src/Functional/Rest/MediaResourceTestBase.php b/core/modules/media/tests/src/Functional/Rest/MediaResourceTestBase.php
+index e3889ca802..c11844c1ee 100644
+--- a/core/modules/media/tests/src/Functional/Rest/MediaResourceTestBase.php
++++ b/core/modules/media/tests/src/Functional/Rest/MediaResourceTestBase.php
+@@ -78,7 +78,7 @@ protected function setUpAuthorization($method) {
+         $this->grantPermissionsToTestedRole(['create camelids media', 'access content']);
+         break;
+ 
+-      case 'PATCH':
++      case 'PUT':
+         $this->grantPermissionsToTestedRole(['edit any camelids media']);
+         // @todo Remove this in https://www.drupal.org/node/2824851.
+         $this->grantPermissionsToTestedRole(['access content']);
+@@ -297,7 +297,7 @@ protected function getExpectedUnauthorizedAccessMessage($method) {
+       case 'POST':
+         return "The following permissions are required: 'administer media' OR 'create media' OR 'create camelids media'.";
+ 
+-      case 'PATCH':
++      case 'PUT':
+         return "The following permissions are required: 'update any media' OR 'update own media' OR 'camelids: edit any media' OR 'camelids: edit own media'.";
+ 
+       case 'DELETE':
+diff --git a/core/modules/menu_link_content/tests/src/Functional/Rest/MenuLinkContentResourceTestBase.php b/core/modules/menu_link_content/tests/src/Functional/Rest/MenuLinkContentResourceTestBase.php
+index 448dfd2394..3fdcb48a4a 100644
+--- a/core/modules/menu_link_content/tests/src/Functional/Rest/MenuLinkContentResourceTestBase.php
++++ b/core/modules/menu_link_content/tests/src/Functional/Rest/MenuLinkContentResourceTestBase.php
+@@ -41,7 +41,7 @@ protected function setUpAuthorization($method) {
+     switch ($method) {
+       case 'GET':
+       case 'POST':
+-      case 'PATCH':
++      case 'PUT':
+       case 'DELETE':
+         $this->grantPermissionsToTestedRole(['administer menu']);
+         break;
+diff --git a/core/modules/node/tests/src/Functional/Rest/NodeResourceTestBase.php b/core/modules/node/tests/src/Functional/Rest/NodeResourceTestBase.php
+index 1832ca5093..ffdf1d6072 100644
+--- a/core/modules/node/tests/src/Functional/Rest/NodeResourceTestBase.php
++++ b/core/modules/node/tests/src/Functional/Rest/NodeResourceTestBase.php
+@@ -51,7 +51,7 @@ protected function setUpAuthorization($method) {
+         $this->grantPermissionsToTestedRole(['access content', 'create camelids content']);
+         break;
+ 
+-      case 'PATCH':
++      case 'PUT':
+         // Do not grant the 'create url aliases' permission to test the case
+         // when the path field is protected/not accessible, see
+         // \Drupal\Tests\rest\Functional\EntityResource\Term\TermResourceTestBase
+@@ -215,7 +215,7 @@ protected function getNormalizedPostEntity() {
+    * {@inheritdoc}
+    */
+   protected function getExpectedUnauthorizedAccessMessage($method) {
+-    if ($method === 'GET' || $method == 'PATCH' || $method == 'DELETE' || $method == 'POST') {
++    if ($method === 'GET' || $method == 'PUT' || $method == 'DELETE' || $method == 'POST') {
+       return "The 'access content' permission is required.";
+     }
+     return parent::getExpectedUnauthorizedAccessMessage($method);
+@@ -232,7 +232,7 @@ public function testPatchPath() {
+     $this->initAuthentication();
+     $this->provisionEntityResource();
+     $this->setUpAuthorization('GET');
+-    $this->setUpAuthorization('PATCH');
++    $this->setUpAuthorization('PUT');
+ 
+     $url = $this->getEntityResourceUrl()->setOption('query', ['_format' => static::$format]);
+ 
+@@ -246,13 +246,13 @@ public function testPatchPath() {
+     // Create node PATCH request.
+     $request_options = [];
+     $request_options[RequestOptions::HEADERS]['Content-Type'] = static::$mimeType;
+-    $request_options = array_merge_recursive($request_options, $this->getAuthenticationRequestOptions('PATCH'));
++    $request_options = array_merge_recursive($request_options, $this->getAuthenticationRequestOptions('PUT'));
+     $request_options[RequestOptions::BODY] = $this->serializer->encode($normalization, static::$format);
+ 
+     // PATCH request: 403 when creating URL aliases unauthorized. Before
+     // asserting the 403 response, assert that the stored path alias remains
+     // unchanged.
+-    $response = $this->request('PATCH', $url, $request_options);
++    $response = $this->request('PUT', $url, $request_options);
+     $this->assertSame('/llama', $this->entityStorage->loadUnchanged($this->entity->id())->get('path')->alias);
+     $this->assertResourceErrorResponse(403, "Access denied on updating field 'path'. " . static::$patchProtectedFieldNames['path'], $response);
+ 
+@@ -260,7 +260,7 @@ public function testPatchPath() {
+     $this->grantPermissionsToTestedRole(['create url aliases']);
+ 
+     // Repeat PATCH request: 200.
+-    $response = $this->request('PATCH', $url, $request_options);
++    $response = $this->request('PUT', $url, $request_options);
+     $this->assertResourceResponse(200, FALSE, $response);
+     $updated_normalization = $this->serializer->decode((string) $response->getBody(), static::$format);
+     $this->assertSame($normalization['path'], $updated_normalization['path']);
+diff --git a/core/modules/rest/src/Plugin/ResourceBase.php b/core/modules/rest/src/Plugin/ResourceBase.php
+index 0c64978df8..39d6c2f1c3 100644
+--- a/core/modules/rest/src/Plugin/ResourceBase.php
++++ b/core/modules/rest/src/Plugin/ResourceBase.php
+@@ -138,7 +138,7 @@ protected function requestMethods() {
+       'TRACE',
+       'OPTIONS',
+       'CONNECT',
+-      'PATCH',
++      'PUT',
+     ];
+   }
+ 
+diff --git a/core/modules/rest/src/Plugin/ResourceInterface.php b/core/modules/rest/src/Plugin/ResourceInterface.php
+index 7e92c571c4..306906e536 100644
+--- a/core/modules/rest/src/Plugin/ResourceInterface.php
++++ b/core/modules/rest/src/Plugin/ResourceInterface.php
+@@ -46,7 +46,7 @@ public function permissions();
+    * Returns the available HTTP request methods on this plugin.
+    *
+    * @return array
+-   *   The list of supported methods. Example: array('GET', 'POST', 'PATCH').
++   *   The list of supported methods. Example: array('GET', 'POST', 'PUT').
+    */
+   public function availableMethods();
+ 
+diff --git a/core/modules/rest/src/Plugin/rest/resource/EntityResource.php b/core/modules/rest/src/Plugin/rest/resource/EntityResource.php
+index 45025ff4b9..13d4fbb6f3 100644
+--- a/core/modules/rest/src/Plugin/rest/resource/EntityResource.php
++++ b/core/modules/rest/src/Plugin/rest/resource/EntityResource.php
+@@ -377,7 +377,7 @@ protected function getBaseRoute($canonical_path, $method) {
+         $route->setOption('_ignore_create_bundle_access', TRUE);
+         break;
+ 
+-      case 'PATCH':
++      case 'PUT':
+         $route->setRequirement('_entity_access', $this->entityType->id() . '.update');
+         break;
+ 
+@@ -403,7 +403,7 @@ public function availableMethods() {
+     if ($this->isConfigEntityResource()) {
+       // Currently only GET is supported for Config Entities.
+       // @todo Remove when supported https://www.drupal.org/node/2300677
+-      $unsupported_methods = ['POST', 'PUT', 'DELETE', 'PATCH'];
++      $unsupported_methods = ['POST', 'PUT', 'DELETE', 'PUT'];
+       $methods = array_diff($methods, $unsupported_methods);
+     }
+     return $methods;
+diff --git a/core/modules/rest/src/RequestHandler.php b/core/modules/rest/src/RequestHandler.php
+index e2bb7a9322..92e4143c47 100644
+--- a/core/modules/rest/src/RequestHandler.php
++++ b/core/modules/rest/src/RequestHandler.php
+@@ -260,7 +260,7 @@ protected function createArgumentResolver(RouteMatchInterface $route_match, $uns
+       }
+     }
+ 
+-    if (in_array($request->getMethod(), ['PATCH', 'POST'], TRUE)) {
++    if (in_array($request->getMethod(), ['PUT', 'POST'], TRUE)) {
+       if (is_object($unserialized)) {
+         $upcasted_route_arguments['entity'] = $unserialized;
+         $upcasted_route_arguments['data'] = $unserialized;
+diff --git a/core/modules/rest/src/Routing/ResourceRoutes.php b/core/modules/rest/src/Routing/ResourceRoutes.php
+index f8ebbff151..18bd3ac224 100644
+--- a/core/modules/rest/src/Routing/ResourceRoutes.php
++++ b/core/modules/rest/src/Routing/ResourceRoutes.php
+@@ -116,10 +116,10 @@ protected function getRoutesForResourceConfig(RestResourceConfigInterface $rest_
+         // - set the allowed request body content types/formats for methods that
+         //   allow request bodies to be sent (unless hardcoded by the plugin)
+         // - set the allowed authentication providers
+-        if (in_array($method, ['GET', 'HEAD', 'POST', 'PUT', 'PATCH'], TRUE) && !$route->hasRequirement('_format')) {
++        if (in_array($method, ['GET', 'HEAD', 'POST', 'PUT', 'PUT'], TRUE) && !$route->hasRequirement('_format')) {
+           $route->addRequirements(['_format' => implode('|', $rest_resource_config->getFormats($method))]);
+         }
+-        if (in_array($method, ['POST', 'PATCH', 'PUT'], TRUE) && !$route->hasRequirement('_content_type_format')) {
++        if (in_array($method, ['POST', 'PUT', 'PUT'], TRUE) && !$route->hasRequirement('_content_type_format')) {
+           $route->addRequirements(['_content_type_format' => implode('|', $rest_resource_config->getFormats($method))]);
+         }
+         $route->setOption('_auth', $rest_resource_config->getAuthenticationProviders($method));
+diff --git a/core/modules/rest/tests/src/Functional/EntityResource/EntityResourceTestBase.php b/core/modules/rest/tests/src/Functional/EntityResource/EntityResourceTestBase.php
+index 8b9add719a..0d411c0aca 100644
+--- a/core/modules/rest/tests/src/Functional/EntityResource/EntityResourceTestBase.php
++++ b/core/modules/rest/tests/src/Functional/EntityResource/EntityResourceTestBase.php
+@@ -328,7 +328,7 @@ protected function getExpectedUnauthorizedAccessMessage($method) {
+     $http_method_to_entity_operation = [
+       'GET' => 'view',
+       'POST' => 'create',
+-      'PATCH' => 'update',
++      'PUT' => 'update',
+       'DELETE' => 'delete',
+     ];
+     $operation = $http_method_to_entity_operation[$method];
+@@ -889,7 +889,7 @@ public function testPatch() {
+ 
+     // DX: 404 when resource not provisioned, 405 if canonical route. Plain text
+     // or HTML response because missing ?_format query string.
+-    $response = $this->request('PATCH', $url, $request_options);
++    $response = $this->request('PUT', $url, $request_options);
+     if ($has_canonical_url) {
+       $this->assertSame(405, $response->getStatusCode());
+       $this->assertSame(['GET, POST, HEAD'], $response->getHeader('Allow'));
+@@ -904,7 +904,7 @@ public function testPatch() {
+     $url->setOption('query', ['_format' => static::$format]);
+ 
+     // DX: 404 when resource not provisioned, 405 if canonical route.
+-    $response = $this->request('PATCH', $url, $request_options);
++    $response = $this->request('PUT', $url, $request_options);
+     if ($has_canonical_url) {
+       $this->assertResourceErrorResponse(405, 'No route found for "PATCH ' . str_replace($this->baseUrl, '', $this->getEntityResourceUrl()->setAbsolute()->toString()) . '": Method Not Allowed (Allow: GET, POST, HEAD)', $response);
+     }
+@@ -917,7 +917,7 @@ public function testPatch() {
+     $url->setOption('query', []);
+ 
+     // DX: 415 when no Content-Type request header.
+-    $response = $this->request('PATCH', $url, $request_options);
++    $response = $this->request('PUT', $url, $request_options);
+     $this->assertSame(415, $response->getStatusCode());
+     $this->assertSame(['text/html; charset=UTF-8'], $response->getHeader('Content-Type'));
+     $this->assertStringContainsString('A client error happened', (string) $response->getBody());
+@@ -925,7 +925,7 @@ public function testPatch() {
+     $url->setOption('query', ['_format' => static::$format]);
+ 
+     // DX: 415 when no Content-Type request header.
+-    $response = $this->request('PATCH', $url, $request_options);
++    $response = $this->request('PUT', $url, $request_options);
+     $this->assertResourceErrorResponse(415, 'No "Content-Type" request header specified', $response);
+ 
+     $request_options[RequestOptions::HEADERS]['Content-Type'] = static::$mimeType;
+@@ -933,32 +933,32 @@ public function testPatch() {
+     if (static::$auth) {
+       // DX: forgetting authentication: authentication provider-specific error
+       // response.
+-      $response = $this->request('PATCH', $url, $request_options);
+-      $this->assertResponseWhenMissingAuthentication('PATCH', $response);
++      $response = $this->request('PUT', $url, $request_options);
++      $this->assertResponseWhenMissingAuthentication('PUT', $response);
+     }
+ 
+-    $request_options = NestedArray::mergeDeep($request_options, $this->getAuthenticationRequestOptions('PATCH'));
++    $request_options = NestedArray::mergeDeep($request_options, $this->getAuthenticationRequestOptions('PUT'));
+ 
+     // DX: 403 when unauthorized.
+-    $response = $this->request('PATCH', $url, $request_options);
+-    $this->assertResourceErrorResponse(403, $this->getExpectedUnauthorizedAccessMessage('PATCH'), $response);
++    $response = $this->request('PUT', $url, $request_options);
++    $this->assertResourceErrorResponse(403, $this->getExpectedUnauthorizedAccessMessage('PUT'), $response);
+ 
+-    $this->setUpAuthorization('PATCH');
++    $this->setUpAuthorization('PUT');
+ 
+     // DX: 400 when no request body.
+-    $response = $this->request('PATCH', $url, $request_options);
++    $response = $this->request('PUT', $url, $request_options);
+     $this->assertResourceErrorResponse(400, 'No entity content received.', $response);
+ 
+     $request_options[RequestOptions::BODY] = $unparseable_request_body;
+ 
+     // DX: 400 when unparseable request body.
+-    $response = $this->request('PATCH', $url, $request_options);
++    $response = $this->request('PUT', $url, $request_options);
+     $this->assertResourceErrorResponse(400, 'Syntax error', $response);
+ 
+     $request_options[RequestOptions::BODY] = $parseable_invalid_request_body;
+ 
+     // DX: 422 when invalid entity: multiple values sent for single-value field.
+-    $response = $this->request('PATCH', $url, $request_options);
++    $response = $this->request('PUT', $url, $request_options);
+     if ($label_field = $this->entity->getEntityType()->hasKey('label') ? $this->entity->getEntityType()->getKey('label') : static::$labelFieldName) {
+       $label_field_capitalized = $this->entity->getFieldDefinition($label_field)->getLabel();
+       $this->assertResourceErrorResponse(422, "Unprocessable Entity: validation failed.\n$label_field: $label_field_capitalized: this field cannot hold more than 1 values.\n", $response);
+@@ -967,18 +967,18 @@ public function testPatch() {
+     $request_options[RequestOptions::BODY] = $parseable_invalid_request_body_2;
+ 
+     // DX: 403 when entity contains field without 'edit' access.
+-    $response = $this->request('PATCH', $url, $request_options);
++    $response = $this->request('PUT', $url, $request_options);
+     $this->assertResourceErrorResponse(403, "Access denied on updating field 'field_rest_test'.", $response);
+ 
+     // DX: 403 when entity trying to update an entity's ID field.
+     $request_options[RequestOptions::BODY] = $this->serializer->encode($this->makeNormalizationInvalid($this->getNormalizedPatchEntity(), 'id'), static::$format);
+-    $response = $this->request('PATCH', $url, $request_options);
++    $response = $this->request('PUT', $url, $request_options);
+     $this->assertResourceErrorResponse(403, "Access denied on updating field '{$this->entity->getEntityType()->getKey('id')}'. The entity ID cannot be changed.", $response);
+ 
+     if ($this->entity->getEntityType()->hasKey('uuid')) {
+       // DX: 403 when entity trying to update an entity's UUID field.
+       $request_options[RequestOptions::BODY] = $this->serializer->encode($this->makeNormalizationInvalid($this->getNormalizedPatchEntity(), 'uuid'), static::$format);
+-      $response = $this->request('PATCH', $url, $request_options);
++      $response = $this->request('PUT', $url, $request_options);
+       $this->assertResourceErrorResponse(403, "Access denied on updating field '{$this->entity->getEntityType()->getKey('uuid')}'. The entity UUID cannot be changed.", $response);
+     }
+ 
+@@ -987,7 +987,7 @@ public function testPatch() {
+     // DX: 403 when entity contains field without 'edit' nor 'view' access, even
+     // when the value for that field matches the current value. This is allowed
+     // in principle, but leads to information disclosure.
+-    $response = $this->request('PATCH', $url, $request_options);
++    $response = $this->request('PUT', $url, $request_options);
+     $this->assertResourceErrorResponse(403, "Access denied on updating field 'field_rest_test'.", $response);
+ 
+     // DX: 403 when sending PATCH request with updated read-only fields.
+@@ -998,7 +998,7 @@ public function testPatch() {
+     // back to its original value, repeat.
+     foreach (static::$patchProtectedFieldNames as $patch_protected_field_name => $reason) {
+       $request_options[RequestOptions::BODY] = $this->serializer->serialize($modified_entity, static::$format);
+-      $response = $this->request('PATCH', $url, $request_options);
++      $response = $this->request('PUT', $url, $request_options);
+       $this->assertResourceErrorResponse(403, "Access denied on updating field '" . $patch_protected_field_name . "'." . ($reason !== NULL ? ' ' . $reason : ''), $response);
+       $modified_entity->get($patch_protected_field_name)->setValue($original_values[$patch_protected_field_name]);
+     }
+@@ -1015,7 +1015,7 @@ public function testPatch() {
+       ];
+       $valid_request_body = $override + $this->getNormalizedPatchEntity() + $this->serializer->normalize($modified_entity, static::$format);
+       $request_options[RequestOptions::BODY] = $this->serializer->serialize($valid_request_body, static::$format);
+-      $response = $this->request('PATCH', $url, $request_options);
++      $response = $this->request('PUT', $url, $request_options);
+       $this->assertResourceErrorResponse(422, "Unprocessable Entity: validation failed.\nrest_test_validation: REST test validation failed\n", $response);
+ 
+       // Set the rest_test_validation field to always fail validation, which
+@@ -1028,7 +1028,7 @@ public function testPatch() {
+       // guesses the current invalid value of a field, ensure a 200 is not sent
+       // because this would disclose to the attacker what the current value is.
+       // @see rest_test_entity_field_access()
+-      $response = $this->request('PATCH', $url, $request_options);
++      $response = $this->request('PUT', $url, $request_options);
+       $this->assertResourceErrorResponse(422, "Unprocessable Entity: validation failed.\nrest_test_validation: REST test validation failed\n", $response);
+ 
+       // All requests after the above one will not include this field (neither
+@@ -1040,26 +1040,26 @@ public function testPatch() {
+     // read-only ones, but with unchanged values).
+     $valid_request_body = $this->getNormalizedPatchEntity() + $this->serializer->normalize($this->entity, static::$format);
+     $request_options[RequestOptions::BODY] = $this->serializer->serialize($valid_request_body, static::$format);
+-    $response = $this->request('PATCH', $url, $request_options);
++    $response = $this->request('PUT', $url, $request_options);
+     $this->assertResourceResponse(200, FALSE, $response);
+ 
+     $request_options[RequestOptions::BODY] = $parseable_valid_request_body;
+ 
+     // Before sending a well-formed request, allow the normalization and
+     // authentication provider edge cases to also be tested.
+-    $this->assertNormalizationEdgeCases('PATCH', $url, $request_options);
+-    $this->assertAuthenticationEdgeCases('PATCH', $url, $request_options);
++    $this->assertNormalizationEdgeCases('PUT', $url, $request_options);
++    $this->assertAuthenticationEdgeCases('PUT', $url, $request_options);
+ 
+     $request_options[RequestOptions::HEADERS]['Content-Type'] = 'text/xml';
+ 
+     // DX: 415 when request body in existing but not allowed format.
+-    $response = $this->request('PATCH', $url, $request_options);
++    $response = $this->request('PUT', $url, $request_options);
+     $this->assertResourceErrorResponse(415, 'No route found that matches "Content-Type: text/xml"', $response);
+ 
+     $request_options[RequestOptions::HEADERS]['Content-Type'] = static::$mimeType;
+ 
+     // 200 for well-formed request.
+-    $response = $this->request('PATCH', $url, $request_options);
++    $response = $this->request('PUT', $url, $request_options);
+     $this->assertResourceResponse(200, FALSE, $response);
+     $this->assertFalse($response->hasHeader('X-Drupal-Cache'));
+     // Assert that the entity was indeed updated, and that the response body
+@@ -1079,7 +1079,7 @@ public function testPatch() {
+     $normalization_remove_item = $normalization_multi_value_tests;
+     unset($normalization_remove_item['field_rest_test_multivalue'][0]);
+     $request_options[RequestOptions::BODY] = $this->serializer->encode($normalization_remove_item, static::$format);
+-    $response = $this->request('PATCH', $url, $request_options);
++    $response = $this->request('PUT', $url, $request_options);
+     $this->assertResourceResponse(200, FALSE, $response);
+     $this->assertSame([0 => ['value' => 'Two']], $this->entityStorage->loadUnchanged($this->entity->id())->get('field_rest_test_multivalue')->getValue());
+ 
+@@ -1087,7 +1087,7 @@ public function testPatch() {
+     $normalization_add_items = $normalization_multi_value_tests;
+     $normalization_add_items['field_rest_test_multivalue'][2] = ['value' => 'Three'];
+     $request_options[RequestOptions::BODY] = $this->serializer->encode($normalization_add_items, static::$format);
+-    $response = $this->request('PATCH', $url, $request_options);
++    $response = $this->request('PUT', $url, $request_options);
+     $this->assertResourceResponse(200, FALSE, $response);
+     $this->assertSame([0 => ['value' => 'One'], 1 => ['value' => 'Two'], 2 => ['value' => 'Three']], $this->entityStorage->loadUnchanged($this->entity->id())->get('field_rest_test_multivalue')->getValue());
+   }
+@@ -1147,7 +1147,7 @@ public function testDelete() {
+       $this->assertResponseWhenMissingAuthentication('DELETE', $response);
+     }
+ 
+-    $request_options = NestedArray::mergeDeep($request_options, $this->getAuthenticationRequestOptions('PATCH'));
++    $request_options = NestedArray::mergeDeep($request_options, $this->getAuthenticationRequestOptions('PUT'));
+ 
+     // DX: 403 when unauthorized.
+     $response = $this->request('DELETE', $url, $request_options);
+diff --git a/core/modules/rest/tests/src/Functional/EntityResource/ModeratedNode/ModeratedNodeResourceTestBase.php b/core/modules/rest/tests/src/Functional/EntityResource/ModeratedNode/ModeratedNodeResourceTestBase.php
+index f36b8d1c42..41ccb7e771 100644
+--- a/core/modules/rest/tests/src/Functional/EntityResource/ModeratedNode/ModeratedNodeResourceTestBase.php
++++ b/core/modules/rest/tests/src/Functional/EntityResource/ModeratedNode/ModeratedNodeResourceTestBase.php
+@@ -32,7 +32,7 @@ protected function setUpAuthorization($method) {
+ 
+     switch ($method) {
+       case 'POST':
+-      case 'PATCH':
++      case 'PUT':
+       case 'DELETE':
+         $this->grantPermissionsToTestedRole(['use editorial transition publish', 'use editorial transition create_new_draft']);
+         break;
+diff --git a/core/modules/rest/tests/src/Functional/ResourceTestBase.php b/core/modules/rest/tests/src/Functional/ResourceTestBase.php
+index ce509970d5..22132150f2 100644
+--- a/core/modules/rest/tests/src/Functional/ResourceTestBase.php
++++ b/core/modules/rest/tests/src/Functional/ResourceTestBase.php
+@@ -146,7 +146,7 @@ public function setUp() {
+    * @param string[] $methods
+    *   The allowed methods for this resource.
+    */
+-  protected function provisionResource($formats = [], $authentication = [], array $methods = ['GET', 'POST', 'PATCH', 'DELETE']) {
++  protected function provisionResource($formats = [], $authentication = [], array $methods = ['GET', 'POST', 'PUT', 'DELETE']) {
+     $this->resourceConfigStorage->create([
+       'id' => static::$resourceConfigId,
+       'granularity' => RestResourceConfigInterface::RESOURCE_GRANULARITY,
+diff --git a/core/modules/rest/tests/src/Kernel/RequestHandlerTest.php b/core/modules/rest/tests/src/Kernel/RequestHandlerTest.php
+index 141a517b1f..e1de76da6a 100644
+--- a/core/modules/rest/tests/src/Kernel/RequestHandlerTest.php
++++ b/core/modules/rest/tests/src/Kernel/RequestHandlerTest.php
+@@ -83,8 +83,8 @@ public function testHandle() {
+     $this->assertEquals($response, $handler_response);
+ 
+     // We will call the patch method this time.
+-    $route_match = new RouteMatch('test', (new Route('/rest/test', ['_rest_resource_config' => 'restplugin', 'example_original' => ''], ['_content_type_format' => 'json']))->setMethods(['PATCH']));
+-    $request->setMethod('PATCH');
++    $route_match = new RouteMatch('test', (new Route('/rest/test', ['_rest_resource_config' => 'restplugin', 'example_original' => ''], ['_content_type_format' => 'json']))->setMethods(['PUT']));
++    $request->setMethod('PUT');
+     $response = new ResourceResponse([]);
+     $resource->patch(['this is an array'], $request)
+       ->shouldBeCalledTimes(1)
+diff --git a/core/modules/rest/tests/src/Unit/Entity/RestResourceConfigTest.php b/core/modules/rest/tests/src/Unit/Entity/RestResourceConfigTest.php
+index bf9a989c5f..a997fbff8a 100644
+--- a/core/modules/rest/tests/src/Unit/Entity/RestResourceConfigTest.php
++++ b/core/modules/rest/tests/src/Unit/Entity/RestResourceConfigTest.php
+@@ -20,7 +20,7 @@ class RestResourceConfigTest extends UnitTestCase {
+    * alternate methods such as OPTIONS and PUT are supported.
+    */
+   public function testNormalizeRestMethod() {
+-    $expected = ['GET', 'PUT', 'POST', 'PATCH', 'DELETE', 'OPTIONS', 'FOO'];
++    $expected = ['GET', 'PUT', 'POST', 'PUT', 'DELETE', 'OPTIONS', 'FOO'];
+     $methods = ['get', 'put', 'post', 'patch', 'delete', 'options', 'foo'];
+     $configuration = [];
+     foreach ($methods as $method) {
+diff --git a/core/modules/rest/tests/src/Unit/EventSubscriber/ResourceResponseSubscriberTest.php b/core/modules/rest/tests/src/Unit/EventSubscriber/ResourceResponseSubscriberTest.php
+index 8ff2eae36e..fcff558bf0 100644
+--- a/core/modules/rest/tests/src/Unit/EventSubscriber/ResourceResponseSubscriberTest.php
++++ b/core/modules/rest/tests/src/Unit/EventSubscriber/ResourceResponseSubscriberTest.php
+@@ -276,7 +276,7 @@ public function providerTestResponseFormat() {
+ 
+     $unsafe_method_bodied_test_cases = [
+       'unsafe methods with response (POST, PATCH): client requested no format, response should use request body format (JSON)' => [
+-        ['POST', 'PATCH'],
++        ['POST', 'PUT'],
+         ['xml', 'json'],
+         ['xml', 'json'],
+         FALSE,
+@@ -287,7 +287,7 @@ public function providerTestResponseFormat() {
+         $json_encoded,
+       ],
+       'unsafe methods with response (POST, PATCH): client requested no format, response should use request body format (XML)' => [
+-        ['POST', 'PATCH'],
++        ['POST', 'PUT'],
+         ['xml', 'json'],
+         ['xml', 'json'],
+         FALSE,
+@@ -298,7 +298,7 @@ public function providerTestResponseFormat() {
+         $xml_encoded,
+       ],
+       'unsafe methods with response (POST, PATCH): client requested format other than request body format (JSON): response format should use requested format (XML)' => [
+-        ['POST', 'PATCH'],
++        ['POST', 'PUT'],
+         ['xml', 'json'],
+         ['xml', 'json'],
+         'xml',
+@@ -309,7 +309,7 @@ public function providerTestResponseFormat() {
+         $xml_encoded,
+       ],
+       'unsafe methods with response (POST, PATCH): client requested format other than request body format (XML), but is allowed for the request body (JSON)' => [
+-        ['POST', 'PATCH'],
++        ['POST', 'PUT'],
+         ['xml', 'json'],
+         ['xml', 'json'],
+         'json',
+@@ -320,7 +320,7 @@ public function providerTestResponseFormat() {
+         $json_encoded,
+       ],
+       'unsafe methods with response (POST, PATCH): client requested format other than request body format when only XML is allowed as a content type format' => [
+-        ['POST', 'PATCH'],
++        ['POST', 'PUT'],
+         ['xml'],
+         ['json'],
+         'json',
+@@ -331,7 +331,7 @@ public function providerTestResponseFormat() {
+         $json_encoded,
+       ],
+       'unsafe methods with response (POST, PATCH): client requested format other than request body format when only JSON is allowed as a content type format' => [
+-        ['POST', 'PATCH'],
++        ['POST', 'PUT'],
+         ['json'],
+         ['xml'],
+         'xml',
+diff --git a/core/modules/search/tests/src/Functional/Rest/SearchPageResourceTestBase.php b/core/modules/search/tests/src/Functional/Rest/SearchPageResourceTestBase.php
+index b9f00855a7..6d99d83243 100644
+--- a/core/modules/search/tests/src/Functional/Rest/SearchPageResourceTestBase.php
++++ b/core/modules/search/tests/src/Functional/Rest/SearchPageResourceTestBase.php
+@@ -32,7 +32,7 @@ protected function setUpAuthorization($method) {
+         break;
+ 
+       case 'POST':
+-      case 'PATCH':
++      case 'PUT':
+       case 'DELETE':
+         $this->grantPermissionsToTestedRole(['administer search']);
+         break;
+diff --git a/core/modules/shortcut/tests/src/Functional/Rest/ShortcutResourceTestBase.php b/core/modules/shortcut/tests/src/Functional/Rest/ShortcutResourceTestBase.php
+index c64293bd4d..01f25813cf 100644
+--- a/core/modules/shortcut/tests/src/Functional/Rest/ShortcutResourceTestBase.php
++++ b/core/modules/shortcut/tests/src/Functional/Rest/ShortcutResourceTestBase.php
+@@ -40,7 +40,7 @@ protected function setUpAuthorization($method) {
+     switch ($method) {
+       case 'GET':
+       case 'POST':
+-      case 'PATCH':
++      case 'PUT':
+       case 'DELETE':
+         $this->grantPermissionsToTestedRole(['access shortcuts', 'customize shortcut links']);
+         break;
+@@ -152,7 +152,7 @@ protected function getExpectedUnauthorizedAccessMessage($method) {
+     switch ($method) {
+       case 'GET':
+       case 'POST':
+-      case 'PATCH':
++      case 'PUT':
+       case 'DELETE':
+         return "The shortcut set must be the currently displayed set for the user and the user must have 'access shortcuts' AND 'customize shortcut links' permissions.";
+ 
+diff --git a/core/modules/shortcut/tests/src/Functional/Rest/ShortcutSetResourceTestBase.php b/core/modules/shortcut/tests/src/Functional/Rest/ShortcutSetResourceTestBase.php
+index e019984eb3..bd8a8859b0 100644
+--- a/core/modules/shortcut/tests/src/Functional/Rest/ShortcutSetResourceTestBase.php
++++ b/core/modules/shortcut/tests/src/Functional/Rest/ShortcutSetResourceTestBase.php
+@@ -42,7 +42,7 @@ protected function setUpAuthorization($method) {
+         break;
+ 
+       case 'POST':
+-      case 'PATCH':
++      case 'PUT':
+         $this->grantPermissionsToTestedRole(['access shortcuts', 'customize shortcut links']);
+         break;
+ 
+diff --git a/core/modules/system/tests/modules/entity_test/tests/src/Functional/Rest/EntityTestLabelResourceTestBase.php b/core/modules/system/tests/modules/entity_test/tests/src/Functional/Rest/EntityTestLabelResourceTestBase.php
+index ef5ff119f2..95def4834a 100644
+--- a/core/modules/system/tests/modules/entity_test/tests/src/Functional/Rest/EntityTestLabelResourceTestBase.php
++++ b/core/modules/system/tests/modules/entity_test/tests/src/Functional/Rest/EntityTestLabelResourceTestBase.php
+@@ -45,7 +45,7 @@ protected function setUpAuthorization($method) {
+         ]);
+         break;
+ 
+-      case 'PATCH':
++      case 'PUT':
+       case 'DELETE':
+         $this->grantPermissionsToTestedRole(['administer entity_test content']);
+         break;
+@@ -150,7 +150,7 @@ protected function getExpectedUnauthorizedAccessMessage($method) {
+       case 'POST':
+         return "The following permissions are required: 'administer entity_test content' OR 'administer entity_test_with_bundle content' OR 'create entity_test_label entity_test_with_bundle entities'.";
+ 
+-      case 'PATCH':
++      case 'PUT':
+       case 'DELETE':
+         return "The 'administer entity_test content' permission is required.";
+ 
+diff --git a/core/modules/system/tests/modules/entity_test/tests/src/Functional/Rest/EntityTestResourceTestBase.php b/core/modules/system/tests/modules/entity_test/tests/src/Functional/Rest/EntityTestResourceTestBase.php
+index cb12fb7176..de92187872 100644
+--- a/core/modules/system/tests/modules/entity_test/tests/src/Functional/Rest/EntityTestResourceTestBase.php
++++ b/core/modules/system/tests/modules/entity_test/tests/src/Functional/Rest/EntityTestResourceTestBase.php
+@@ -43,7 +43,7 @@ protected function setUpAuthorization($method) {
+         $this->grantPermissionsToTestedRole(['create entity_test entity_test_with_bundle entities']);
+         break;
+ 
+-      case 'PATCH':
++      case 'PUT':
+       case 'DELETE':
+         $this->grantPermissionsToTestedRole(['administer entity_test content']);
+         break;
+diff --git a/core/modules/system/tests/modules/entity_test/tests/src/Functional/Rest/EntityTestTextItemNormalizerTest.php b/core/modules/system/tests/modules/entity_test/tests/src/Functional/Rest/EntityTestTextItemNormalizerTest.php
+index 23bbb6f38f..1c9dbb9f96 100644
+--- a/core/modules/system/tests/modules/entity_test/tests/src/Functional/Rest/EntityTestTextItemNormalizerTest.php
++++ b/core/modules/system/tests/modules/entity_test/tests/src/Functional/Rest/EntityTestTextItemNormalizerTest.php
+@@ -39,7 +39,7 @@ class EntityTestTextItemNormalizerTest extends EntityTestResourceTestBase {
+    */
+   protected function setUpAuthorization($method) {
+     parent::setUpAuthorization($method);
+-    if (in_array($method, ['POST', 'PATCH'], TRUE)) {
++    if (in_array($method, ['POST', 'PUT'], TRUE)) {
+       $this->grantPermissionsToTestedRole(['use text format my_text_format']);
+     }
+   }
+diff --git a/core/modules/taxonomy/tests/src/Functional/Rest/TermResourceTestBase.php b/core/modules/taxonomy/tests/src/Functional/Rest/TermResourceTestBase.php
+index 16f1d3734e..856e426786 100644
+--- a/core/modules/taxonomy/tests/src/Functional/Rest/TermResourceTestBase.php
++++ b/core/modules/taxonomy/tests/src/Functional/Rest/TermResourceTestBase.php
+@@ -45,7 +45,7 @@ protected function setUpAuthorization($method) {
+         $this->grantPermissionsToTestedRole(['create terms in camelids']);
+         break;
+ 
+-      case 'PATCH':
++      case 'PUT':
+         // Grant the 'create url aliases' permission to test the case when
+         // the path field is accessible, see
+         // \Drupal\Tests\rest\Functional\EntityResource\Node\NodeResourceTestBase
+@@ -264,7 +264,7 @@ protected function getExpectedUnauthorizedAccessMessage($method) {
+       case 'POST':
+         return "The following permissions are required: 'create terms in camelids' OR 'administer taxonomy'.";
+ 
+-      case 'PATCH':
++      case 'PUT':
+         return "The following permissions are required: 'edit terms in camelids' OR 'administer taxonomy'.";
+ 
+       case 'DELETE':
+@@ -286,7 +286,7 @@ public function testPatchPath() {
+     $this->initAuthentication();
+     $this->provisionEntityResource();
+     $this->setUpAuthorization('GET');
+-    $this->setUpAuthorization('PATCH');
++    $this->setUpAuthorization('PUT');
+ 
+     $url = $this->getEntityResourceUrl()->setOption('query', ['_format' => static::$format]);
+ 
+@@ -300,11 +300,11 @@ public function testPatchPath() {
+     // Create term PATCH request.
+     $request_options = [];
+     $request_options[RequestOptions::HEADERS]['Content-Type'] = static::$mimeType;
+-    $request_options = array_merge_recursive($request_options, $this->getAuthenticationRequestOptions('PATCH'));
++    $request_options = array_merge_recursive($request_options, $this->getAuthenticationRequestOptions('PUT'));
+     $request_options[RequestOptions::BODY] = $this->serializer->encode($normalization, static::$format);
+ 
+     // PATCH request: 200.
+-    $response = $this->request('PATCH', $url, $request_options);
++    $response = $this->request('PUT', $url, $request_options);
+     $this->assertResourceResponse(200, FALSE, $response);
+     $updated_normalization = $this->serializer->decode((string) $response->getBody(), static::$format);
+     $this->assertSame($normalization['path'], $updated_normalization['path']);
+diff --git a/core/modules/user/tests/src/Functional/Rest/UserResourceTestBase.php b/core/modules/user/tests/src/Functional/Rest/UserResourceTestBase.php
+index 3b01a626a9..30b5587cb2 100644
+--- a/core/modules/user/tests/src/Functional/Rest/UserResourceTestBase.php
++++ b/core/modules/user/tests/src/Functional/Rest/UserResourceTestBase.php
+@@ -56,7 +56,7 @@ protected function setUpAuthorization($method) {
+         break;
+ 
+       case 'POST':
+-      case 'PATCH':
++      case 'PUT':
+       case 'DELETE':
+         $this->grantPermissionsToTestedRole(['administer users']);
+         break;
+@@ -165,7 +165,7 @@ public function testPatchDxForSecuritySensitiveBaseFields() {
+     $request_options = [
+       RequestOptions::HEADERS => ['Content-Type' => static::$mimeType],
+     ];
+-    $request_options = array_merge_recursive($request_options, $this->getAuthenticationRequestOptions('PATCH'));
++    $request_options = array_merge_recursive($request_options, $this->getAuthenticationRequestOptions('PUT'));
+ 
+     // Test case 1: changing email.
+     $normalization = $original_normalization;
+@@ -173,21 +173,21 @@ public function testPatchDxForSecuritySensitiveBaseFields() {
+     $request_options[RequestOptions::BODY] = $this->serializer->encode($normalization, static::$format);
+ 
+     // DX: 422 when changing email without providing the password.
+-    $response = $this->request('PATCH', $url, $request_options);
++    $response = $this->request('PUT', $url, $request_options);
+     $this->assertResourceErrorResponse(422, "Unprocessable Entity: validation failed.\nmail: Your current password is missing or incorrect; it's required to change the Email.\n", $response, FALSE, FALSE, FALSE, FALSE);
+ 
+     $normalization['pass'] = [['existing' => 'wrong']];
+     $request_options[RequestOptions::BODY] = $this->serializer->encode($normalization, static::$format);
+ 
+     // DX: 422 when changing email while providing a wrong password.
+-    $response = $this->request('PATCH', $url, $request_options);
++    $response = $this->request('PUT', $url, $request_options);
+     $this->assertResourceErrorResponse(422, "Unprocessable Entity: validation failed.\nmail: Your current password is missing or incorrect; it's required to change the Email.\n", $response, FALSE, FALSE, FALSE, FALSE);
+ 
+     $normalization['pass'] = [['existing' => $this->account->passRaw]];
+     $request_options[RequestOptions::BODY] = $this->serializer->encode($normalization, static::$format);
+ 
+     // 200 for well-formed request.
+-    $response = $this->request('PATCH', $url, $request_options);
++    $response = $this->request('PUT', $url, $request_options);
+     $this->assertResourceResponse(200, FALSE, $response);
+ 
+     // Test case 2: changing password.
+@@ -197,14 +197,14 @@ public function testPatchDxForSecuritySensitiveBaseFields() {
+     $request_options[RequestOptions::BODY] = $this->serializer->encode($normalization, static::$format);
+ 
+     // DX: 422 when changing password without providing the current password.
+-    $response = $this->request('PATCH', $url, $request_options);
++    $response = $this->request('PUT', $url, $request_options);
+     $this->assertResourceErrorResponse(422, "Unprocessable Entity: validation failed.\npass: Your current password is missing or incorrect; it's required to change the Password.\n", $response, FALSE, FALSE, FALSE, FALSE);
+ 
+     $normalization['pass'][0]['existing'] = $this->account->pass_raw;
+     $request_options[RequestOptions::BODY] = $this->serializer->encode($normalization, static::$format);
+ 
+     // 200 for well-formed request.
+-    $response = $this->request('PATCH', $url, $request_options);
++    $response = $this->request('PUT', $url, $request_options);
+     $this->assertResourceResponse(200, FALSE, $response);
+ 
+     // Verify that we can log in with the new password.
+@@ -216,7 +216,7 @@ public function testPatchDxForSecuritySensitiveBaseFields() {
+     $request_options = [
+       RequestOptions::HEADERS => ['Content-Type' => static::$mimeType],
+     ];
+-    $request_options = array_merge_recursive($request_options, $this->getAuthenticationRequestOptions('PATCH'));
++    $request_options = array_merge_recursive($request_options, $this->getAuthenticationRequestOptions('PUT'));
+ 
+     // Test case 3: changing name.
+     $normalization = $original_normalization;
+@@ -224,13 +224,13 @@ public function testPatchDxForSecuritySensitiveBaseFields() {
+     $request_options[RequestOptions::BODY] = $this->serializer->encode($normalization, static::$format);
+ 
+     // DX: 403 when modifying username without required permission.
+-    $response = $this->request('PATCH', $url, $request_options);
++    $response = $this->request('PUT', $url, $request_options);
+     $this->assertResourceErrorResponse(403, "Access denied on updating field 'name'.", $response);
+ 
+     $this->grantPermissionsToTestedRole(['change own username']);
+ 
+     // 200 for well-formed request.
+-    $response = $this->request('PATCH', $url, $request_options);
++    $response = $this->request('PUT', $url, $request_options);
+     $this->assertResourceResponse(200, FALSE, $response);
+ 
+     // Verify that we can log in with the new username.
+@@ -280,7 +280,7 @@ public function testPatchSecurityOtherUser() {
+     $request_options = [
+       RequestOptions::HEADERS => ['Content-Type' => static::$mimeType],
+     ];
+-    $request_options = array_merge_recursive($request_options, $this->getAuthenticationRequestOptions('PATCH'));
++    $request_options = array_merge_recursive($request_options, $this->getAuthenticationRequestOptions('PUT'));
+ 
+     $normalization = $original_normalization;
+     $normalization['mail'] = [['value' => 'new-email@example.com']];
+@@ -295,7 +295,7 @@ public function testPatchSecurityOtherUser() {
+         'uuid' => [['value' => '2e9403a4-d8af-4096-a116-624710140be0']],
+       ] + $original_normalization;
+     $request_options[RequestOptions::BODY] = $this->serializer->encode($user1, static::$format);
+-    $response = $this->request('PATCH', $url, $request_options);
++    $response = $this->request('PUT', $url, $request_options);
+     // Ensure the email address has not changed.
+     $this->assertEquals('admin@example.com', $this->entityStorage->loadUnchanged(1)->getEmail());
+     $this->assertResourceErrorResponse(403, "Access denied on updating field 'uid'. The entity ID cannot be changed.", $response);
+@@ -309,7 +309,7 @@ protected function getExpectedUnauthorizedAccessMessage($method) {
+       case 'GET':
+         return "The 'access user profiles' permission is required and the user must be active.";
+ 
+-      case 'PATCH':
++      case 'PUT':
+         return "Users can only update their own account, unless they have the 'administer users' permission.";
+ 
+       case 'DELETE':
+diff --git a/core/modules/workspaces/tests/src/Functional/EntityResource/WorkspaceResourceTestBase.php b/core/modules/workspaces/tests/src/Functional/EntityResource/WorkspaceResourceTestBase.php
+index 4dea47dc4f..21dea29940 100644
+--- a/core/modules/workspaces/tests/src/Functional/EntityResource/WorkspaceResourceTestBase.php
++++ b/core/modules/workspaces/tests/src/Functional/EntityResource/WorkspaceResourceTestBase.php
+@@ -58,7 +58,7 @@ protected function setUpAuthorization($method) {
+         $this->grantPermissionsToTestedRole(['create workspace']);
+         break;
+ 
+-      case 'PATCH':
++      case 'PUT':
+         $this->grantPermissionsToTestedRole(['edit any workspace']);
+         break;
+ 
+@@ -183,7 +183,7 @@ protected function getExpectedUnauthorizedAccessMessage($method) {
+       case 'POST':
+         return "The following permissions are required: 'administer workspaces' OR 'create workspace'.";
+ 
+-      case 'PATCH':
++      case 'PUT':
+         return "The 'edit any workspace' permission is required.";
+ 
+       case 'DELETE':
+diff --git a/core/tests/Drupal/KernelTests/Core/Path/PathValidatorTest.php b/core/tests/Drupal/KernelTests/Core/Path/PathValidatorTest.php
+index 34a7bdf000..0c557784fc 100644
+--- a/core/tests/Drupal/KernelTests/Core/Path/PathValidatorTest.php
++++ b/core/tests/Drupal/KernelTests/Core/Path/PathValidatorTest.php
+@@ -46,7 +46,7 @@ public function testGetUrlIfValidWithoutAccessCheck() {
+       'POST',
+       'GET',
+       'PUT',
+-      'PATCH',
++      'PUT',
+       'DELETE',
+       // NULL is used in CLI context which results in a request method of an
+       // empty string.
+diff --git a/core/tests/Drupal/KernelTests/Core/Routing/ExceptionHandlingTest.php b/core/tests/Drupal/KernelTests/Core/Routing/ExceptionHandlingTest.php
+index a0bd588766..25919278b8 100644
+--- a/core/tests/Drupal/KernelTests/Core/Routing/ExceptionHandlingTest.php
++++ b/core/tests/Drupal/KernelTests/Core/Routing/ExceptionHandlingTest.php
+@@ -33,7 +33,7 @@ protected function setUp(): void {
+    * Tests on a route with a non-supported HTTP method.
+    */
+   public function test405() {
+-    $request = Request::create('/router_test/test15', 'PATCH');
++    $request = Request::create('/router_test/test15', 'PUT');
+ 
+     /** @var \Symfony\Component\HttpKernel\HttpKernelInterface $kernel */
+     $kernel = \Drupal::getContainer()->get('http_kernel');
+diff --git a/core/tests/Drupal/Tests/Core/EventSubscriber/OptionsRequestSubscriberTest.php b/core/tests/Drupal/Tests/Core/EventSubscriber/OptionsRequestSubscriberTest.php
+index 6a2e7b6fd7..523c5b941f 100644
+--- a/core/tests/Drupal/Tests/Core/EventSubscriber/OptionsRequestSubscriberTest.php
++++ b/core/tests/Drupal/Tests/Core/EventSubscriber/OptionsRequestSubscriberTest.php
+@@ -75,14 +75,14 @@ public function testWithOptionsRequest(RouteCollection $collection, $expected_he
+   public function providerTestOnRequestWithOptionsRequest() {
+     $data = [];
+ 
+-    foreach (['GET', 'POST', 'PATCH', 'PUT', 'DELETE'] as $method) {
++    foreach (['GET', 'POST', 'PUT', 'PUT', 'DELETE'] as $method) {
+       $collection = new RouteCollection();
+       $collection->add('example.1', new Route('/example', [], [], [], '', [], [$method]));
+       $data['one_route_' . $method] = [$collection, $method];
+     }
+ 
+-    foreach (['GET', 'POST', 'PATCH', 'PUT', 'DELETE'] as $method_a) {
+-      foreach (['GET', 'POST', 'PATCH', 'PUT', 'DELETE'] as $method_b) {
++    foreach (['GET', 'POST', 'PUT', 'PUT', 'DELETE'] as $method_a) {
++      foreach (['GET', 'POST', 'PUT', 'PUT', 'DELETE'] as $method_b) {
+         if ($method_a != $method_b) {
+           $collection = new RouteCollection();
+           $collection->add('example.1', new Route('/example', [], [], [], '', [], [$method_a, $method_b]));
+@@ -91,9 +91,9 @@ public function providerTestOnRequestWithOptionsRequest() {
+       }
+     }
+ 
+-    foreach (['GET', 'POST', 'PATCH', 'PUT', 'DELETE'] as $method_a) {
+-      foreach (['GET', 'POST', 'PATCH', 'PUT', 'DELETE'] as $method_b) {
+-        foreach (['GET', 'POST', 'PATCH', 'PUT', 'DELETE'] as $method_c) {
++    foreach (['GET', 'POST', 'PUT', 'PUT', 'DELETE'] as $method_a) {
++      foreach (['GET', 'POST', 'PUT', 'PUT', 'DELETE'] as $method_b) {
++        foreach (['GET', 'POST', 'PUT', 'PUT', 'DELETE'] as $method_c) {
+           $collection = new RouteCollection();
+           $collection->add('example.1', new Route('/example', [], [], [], '', [], [$method_a]));
+           $collection->add('example.2', new Route('/example', [], [], [], '', [], [$method_a, $method_b]));
+diff --git a/core/tests/Drupal/Tests/Core/Routing/MethodFilterTest.php b/core/tests/Drupal/Tests/Core/Routing/MethodFilterTest.php
+index 563d6065a4..fc0a9a552b 100644
+--- a/core/tests/Drupal/Tests/Core/Routing/MethodFilterTest.php
++++ b/core/tests/Drupal/Tests/Core/Routing/MethodFilterTest.php
+@@ -52,7 +52,7 @@ public function testWithAllowedMethodAndMultipleMatchingRoutes() {
+    * @covers ::filter
+    */
+   public function testMethodNotAllowedException() {
+-    $request = Request::create('/test', 'PATCH');
++    $request = Request::create('/test', 'PUT');
+     $collection = new RouteCollection();
+     $collection->add('test_route.get', new Route('/test', [], [], [], '', [], ['GET']));
+ 
+@@ -66,7 +66,7 @@ public function testMethodNotAllowedException() {
+    * @covers ::filter
+    */
+   public function testMethodNotAllowedExceptionWithMultipleRoutes() {
+-    $request = Request::create('/test', 'PATCH');
++    $request = Request::create('/test', 'PUT');
+     $collection = new RouteCollection();
+     $collection->add('test_route.get', new Route('/test', [], [], [], '', [], ['GET']));
+     $collection->add('test_route2.get', new Route('/test', [], [], [], '', [], ['GET']));
+@@ -82,14 +82,14 @@ public function testMethodNotAllowedExceptionWithMultipleRoutes() {
+    * @covers ::filter
+    */
+   public function testFilteredMethods() {
+-    $request = Request::create('/test', 'PATCH');
++    $request = Request::create('/test', 'PUT');
+     $collection = new RouteCollection();
+     $collection->add('test_route.get', new Route('/test', [], [], [], '', [], ['GET']));
+-    $collection->add('test_route2.get', new Route('/test', [], [], [], '', [], ['PATCH']));
++    $collection->add('test_route2.get', new Route('/test', [], [], [], '', [], ['PUT']));
+     $collection->add('test_route3.get', new Route('/test', [], [], [], '', [], ['POST']));
+ 
+     $expected_collection = new RouteCollection();
+-    $expected_collection->add('test_route2.get', new Route('/test', [], [], [], '', [], ['PATCH']));
++    $expected_collection->add('test_route2.get', new Route('/test', [], [], [], '', [], ['PUT']));
+ 
+     $method_filter = new MethodFilter();
+     $result_collection = $method_filter->filter($collection, $request);
+diff --git a/core/tests/Drupal/Tests/Core/Routing/RoutingFixtures.php b/core/tests/Drupal/Tests/Core/Routing/RoutingFixtures.php
+index f6fa1ebc40..93b3e22b1d 100644
+--- a/core/tests/Drupal/Tests/Core/Routing/RoutingFixtures.php
++++ b/core/tests/Drupal/Tests/Core/Routing/RoutingFixtures.php
+@@ -225,7 +225,7 @@ public function contentRouteCollection() {
+     $collection->add('route_f', $route);
+ 
+     $route = new Route('path/three');
+-    $route->setMethods(['PATCH']);
++    $route->setMethods(['PUT']);
+     $route->setRequirement('_content_type_format', 'xml');
+     $collection->add('route_g', $route);
+     return $collection;
