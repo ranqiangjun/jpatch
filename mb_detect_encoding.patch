@@ -1,0 +1,12 @@
+diff --git a/src/Trait/HelperTrait.php b/src/Trait/HelperTrait.php
+index 2e32bab..54d9f92 100644
+--- a/src/Trait/HelperTrait.php
++++ b/src/Trait/HelperTrait.php
+@@ -30,6 +30,6 @@ trait HelperTrait
+      */
+     public function validateUtf8($text)
+     {
+-        return !(mb_detect_encoding($text, 'UTF-8', true) === false);
++        return !(mb_detect_encoding($text ?? '', 'UTF-8', true) === false);
+     }
+ }
