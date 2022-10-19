@@ -1,0 +1,124 @@
+diff --git a/core/modules/taxonomy/src/Plugin/views/filter/TaxonomyIndexTid.php b/core/modules/taxonomy/src/Plugin/views/filter/TaxonomyIndexTid.php
+index 1378d3b70c..bab5a1d1ae 100644
+--- a/core/modules/taxonomy/src/Plugin/views/filter/TaxonomyIndexTid.php
++++ b/core/modules/taxonomy/src/Plugin/views/filter/TaxonomyIndexTid.php
+@@ -315,11 +315,22 @@ protected function valueValidate($form, FormStateInterface $form_state) {
+       return;
+     }
+ 
++    // Autocomplete puts the values in target_id. Move the values as expected by
++    // Drupal\taxonomy\Plugin\views\filter\TaxonomyIndexTid::validateExposed() method.
+     $tids = [];
+-    if ($values = $form_state->getValue(['options', 'value'])) {
+-      foreach ($values as $value) {
+-        $tids[] = $value['target_id'];
++    if ($this->isAGroup()) {
++      if ($group_values = $form_state->getValue(['options', 'group_info', 'group_items'])) {
++        foreach ($group_values as $group_id => $item) {
++          if (!empty($item['value'])) {
++            $tids = array_column($item['value'], 'target_id');
++          }
++          $form_state->setValue(['options', 'group_info', 'group_items', $group_id, 'value'], $tids);
++        }
+       }
++      return;
++    }
++    if ($values = $form_state->getValue(['options', 'value'])) {
++      $tids = array_column($values, 'target_id');
+     }
+     $form_state->setValue(['options', 'value'], $tids);
+   }
+@@ -384,11 +395,14 @@ public function validateExposed(&$form, FormStateInterface $form_state) {
+       return;
+     }
+ 
+-    if (empty($this->options['expose']['identifier'])) {
++    if (empty($this->options['expose']['identifier']) || $form_state->getValue($identifier) == 'All') {
+       return;
+     }
+ 
+-    if ($values = $form_state->getValue($identifier)) {
++    if ($this->isAGroup() && $group = $form_state->getValue($identifier)) {
++      $this->validated_exposed_input = $this->options['group_info']['group_items'][$group]['value'];
++    }
++    elseif ($values = $form_state->getValue($identifier)) {
+       foreach ($values as $value) {
+         $this->validated_exposed_input[] = $value['target_id'];
+       }
+@@ -499,21 +513,4 @@ protected function addOption(array &$options, TermInterface $term, array $vocabu
+     }
+   }
+ 
+-  /**
+-   * {@inheritdoc}
+-   */
+-  public function buildExposedFiltersGroupForm(&$form, FormStateInterface $form_state) {
+-    parent::buildExposedFiltersGroupForm($form, $form_state);
+-    // Transform the numeric values (ids) into entity labels if the widget is
+-    // autocomplete.
+-    if ($this->options['type'] === 'textfield') {
+-      foreach ($form['group_info']['group_items'] as &$item) {
+-        if (!empty($item['value']['#default_value']) && is_array($item['value']['#default_value'])) {
+-          $terms = $this->termStorage->loadMultiple($item['value']['#default_value']);
+-          $item['value']['#default_value'] = EntityAutocomplete::getEntityLabels($terms);
+-        }
+-      }
+-    }
+-  }
+-
+ }
+diff --git a/core/modules/taxonomy/tests/src/Functional/Views/TaxonomyIndexTidUiTest.php b/core/modules/taxonomy/tests/src/Functional/Views/TaxonomyIndexTidUiTest.php
+index f7c3bab9aa..8eeeb7ca10 100644
+--- a/core/modules/taxonomy/tests/src/Functional/Views/TaxonomyIndexTidUiTest.php
++++ b/core/modules/taxonomy/tests/src/Functional/Views/TaxonomyIndexTidUiTest.php
+@@ -382,6 +382,7 @@ public function testExposedGroupedFilter() {
+     $this->drupalCreateContentType(['type' => 'article']);
+     $field_name = 'field_views_testing_tags';
+     $this->createEntityReferenceField('node', 'article', $field_name, NULL, 'taxonomy_term');
++    $filter_settings_path = '/admin/structure/views/nojs/handler/test_taxonomy_exposed_grouped_filter/page_1/filter/field_views_testing_tags_target_id';
+ 
+     $nodes = [];
+     for ($i = 0; $i < 3; $i++) {
+@@ -391,7 +392,7 @@ public function testExposedGroupedFilter() {
+       $nodes[] = $this->drupalCreateNode($node);
+     }
+ 
+-    $this->drupalGet('/admin/structure/views/nojs/handler/test_taxonomy_exposed_grouped_filter/page_1/filter/field_views_testing_tags_target_id');
++    $this->drupalGet($filter_settings_path);
+     $edit = [
+       'options[group_info][group_items][1][value][]' => [$this->terms[0][0]->id(), $this->terms[1][0]->id()],
+       'options[group_info][group_items][2][value][]' => [$this->terms[1][0]->id(), $this->terms[2][0]->id()],
+@@ -416,6 +417,33 @@ public function testExposedGroupedFilter() {
+     $this->assertSession()->pageTextContains($nodes[0]->getTitle());
+     $this->assertSession()->pageTextContains($nodes[2]->getTitle());
+     $this->assertSession()->pageTextNotContains($nodes[1]->getTitle());
++
++    // Switch to the autocomplete filter.
++    $this->drupalGet('/admin/structure/views/nojs/handler-extra/test_taxonomy_exposed_grouped_filter/page_1/filter/field_views_testing_tags_target_id');
++    $edit = [];
++    $edit["options[type]"] = 'textfield';
++    $this->submitForm($edit, 'Apply');
++
++    // Check default value formatting.
++    $this->drupalGet($filter_settings_path);
++    $this->assertSession()->fieldValueEquals('options[group_info][group_items][1][value]', "{$this->terms[0][0]->label()} ({$this->terms[0][0]->id()}), {$this->terms[1][0]->label()} ({$this->terms[1][0]->id()})");
++
++    // And one more group and re-save the form to trigger validation.
++    $this->submitForm([], 'Add another item');
++
++    $edit = [
++      'options[group_info][group_items][4][value]' => "{$this->terms[2][0]->label()} ({$this->terms[2][0]->id()})",
++      'options[group_info][group_items][4][title]' => 'Group 4',
++      'options[group_info][group_items][4][operator]' => 'or',
++    ];
++    $this->submitForm($edit, 'Apply');
++    $this->submitForm([], 'Save');
++
++    $this->drupalGet('/test-taxonomy-exposed-grouped-filter');
++    $this->submitForm(['field_views_testing_tags_target_id' => 4], 'Apply');
++    $this->assertSession()->pageTextContains($nodes[2]->getTitle());
++    $this->assertSession()->pageTextNotContains($nodes[0]->getTitle());
++    $this->assertSession()->pageTextNotContains($nodes[1]->getTitle());
+   }
+ 
+   /**
