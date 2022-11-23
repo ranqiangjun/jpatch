@@ -1,0 +1,25 @@
+diff --git a/core/modules/views/src/Plugin/views/filter/Combine.php b/core/modules/views/src/Plugin/views/filter/Combine.php
+index 36dab819e5..77f42a029f 100644
+--- a/core/modules/views/src/Plugin/views/filter/Combine.php
++++ b/core/modules/views/src/Plugin/views/filter/Combine.php
+@@ -84,11 +84,15 @@ public function query() {
+         $expression = reset($fields);
+       }
+       else {
+-        // Multiple fields are separated by 3 spaces so that so that search
+-        // strings that contain spaces are still only matched to single field
+-        // values and not to multi-field values that exist only because we do
+-        // the concatenation/LIKE trick.
+-        $expression = implode(", ' ', ", $fields);
++        // Multiple fields are separated by 3 spaces so that search strings that
++        // contain spaces are still only matched to single field values and not
++        // to multi-field values that exist only because we do the
++        // concatenation/LIKE trick.
++        $separator = ", '', ";
++        if (!empty($this->query->options["query_tags"]) && in_array('concat_no_space', $this->query->options["query_tags"])) {
++          $separator = ", ";
++        }
++        $expression = implode($separator, $fields);
+         $expression = "CONCAT_WS(' ', $expression)";
+       }
+       $info = $this->operators();
