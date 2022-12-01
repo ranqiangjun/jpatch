@@ -1,0 +1,24 @@
+diff --git a/src/Plugin/Commerce/ExchangerProvider/FixerExchanger.php b/src/Plugin/Commerce/ExchangerProvider/FixerExchanger.php
+index e1e92b6..98e38a2 100644
+--- a/src/Plugin/Commerce/ExchangerProvider/FixerExchanger.php
++++ b/src/Plugin/Commerce/ExchangerProvider/FixerExchanger.php
+@@ -31,6 +31,10 @@ class FixerExchanger extends ExchangerProviderRemoteBase {
+   public function getRemoteData($base_currency = NULL) {
+     $data = NULL;
+ 
++    if (!in_array($base_currency, ['CNY', 'GBP'])) {
++      return NULL;
++    }
++
+     $options = [
+       'headers' => ['apikey' => $this->getApiKey()],
+     ];
+@@ -45,6 +49,8 @@ class FixerExchanger extends ExchangerProviderRemoteBase {
+     if ($request) {
+       $json = Json::decode($request);
+ 
++      $this->logger->info(var_export($json, TRUE));
++
+       if (!empty($json['success'])) {
+         // Leave base currency. In some cases we don't know base currency.
+         // Fixer.io on free plan uses your address for base currency, and in
