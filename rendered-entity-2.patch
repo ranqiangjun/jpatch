@@ -1,0 +1,18 @@
+diff --git a/core/modules/views/src/Plugin/views/field/RenderedEntity.php b/core/modules/views/src/Plugin/views/field/RenderedEntity.php
+index dce5efcd21..8c7271ad3d 100644
+--- a/core/modules/views/src/Plugin/views/field/RenderedEntity.php
++++ b/core/modules/views/src/Plugin/views/field/RenderedEntity.php
+@@ -129,8 +129,12 @@ public function buildOptionsForm(&$form, FormStateInterface $form_state) {
+    * {@inheritdoc}
+    */
+   public function render(ResultRow $values) {
+-    $entity = $this->getEntityTranslation($this->getEntity($values), $values);
+     $build = [];
++    $entity = $this->getEntity($values);
++    if ($entity === NULL) {
++      return $build;
++    }
++    $entity = $this->getEntityTranslation($entity, $values);
+     if (isset($entity)) {
+       $access = $entity->access('view', NULL, TRUE);
+       $build['#access'] = $access;
