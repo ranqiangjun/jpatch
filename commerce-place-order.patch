@@ -1,0 +1,30 @@
+diff --git a/modules/checkout/src/Plugin/Commerce/CheckoutFlow/CheckoutFlowBase.php b/modules/checkout/src/Plugin/Commerce/CheckoutFlow/CheckoutFlowBase.php
+index ae42224b..6ac2d983 100644
+--- a/modules/checkout/src/Plugin/Commerce/CheckoutFlow/CheckoutFlowBase.php
++++ b/modules/checkout/src/Plugin/Commerce/CheckoutFlow/CheckoutFlowBase.php
+@@ -486,13 +486,6 @@ abstract class CheckoutFlowBase extends PluginBase implements CheckoutFlowInterf
+     elseif ($step_id != 'payment') {
+       $order->unlock();
+     }
+-    // Place the order.
+-    if ($step_id == 'complete' && $order->getState()->getId() == 'draft') {
+-      // Notify other modules.
+-      $event = new OrderEvent($order);
+-      $this->eventDispatcher->dispatch($event, CheckoutEvents::COMPLETION);
+-      $order->getState()->applyTransitionById('place');
+-    }
+   }
+ 
+   /**
+diff --git a/modules/payment/src/EventSubscriber/OrderPaidSubscriber.php b/modules/payment/src/EventSubscriber/OrderPaidSubscriber.php
+index 9f6d2c40..1cb17757 100644
+--- a/modules/payment/src/EventSubscriber/OrderPaidSubscriber.php
++++ b/modules/payment/src/EventSubscriber/OrderPaidSubscriber.php
+@@ -52,7 +52,6 @@ class OrderPaidSubscriber implements EventSubscriberInterface {
+     }
+ 
+     if ($payment_gateway->getPlugin() instanceof OffsitePaymentGatewayInterface) {
+-      $order->getState()->applyTransitionById('place');
+       // A placed order should never be locked.
+       $order->unlock();
+     }
