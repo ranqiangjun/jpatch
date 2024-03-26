@@ -1,17 +1,17 @@
 diff --git a/modules/checkout/src/Plugin/Commerce/CheckoutFlow/CheckoutFlowBase.php b/modules/checkout/src/Plugin/Commerce/CheckoutFlow/CheckoutFlowBase.php
-index ae42224b..6ac2d983 100644
+index 337042ac..436fefe0 100644
 --- a/modules/checkout/src/Plugin/Commerce/CheckoutFlow/CheckoutFlowBase.php
 +++ b/modules/checkout/src/Plugin/Commerce/CheckoutFlow/CheckoutFlowBase.php
-@@ -486,13 +486,6 @@ abstract class CheckoutFlowBase extends PluginBase implements CheckoutFlowInterf
+@@ -448,13 +448,6 @@ abstract class CheckoutFlowBase extends PluginBase implements CheckoutFlowInterf
      elseif ($step_id != 'payment') {
-       $order->unlock();
+       $this->order->unlock();
      }
 -    // Place the order.
--    if ($step_id == 'complete' && $order->getState()->getId() == 'draft') {
+-    if ($step_id == 'complete' && $this->order->getState()->getId() == 'draft') {
 -      // Notify other modules.
--      $event = new OrderEvent($order);
+-      $event = new OrderEvent($this->order);
 -      $this->eventDispatcher->dispatch($event, CheckoutEvents::COMPLETION);
--      $order->getState()->applyTransitionById('place');
+-      $this->order->getState()->applyTransitionById('place');
 -    }
    }
  
